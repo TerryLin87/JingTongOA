@@ -1,0 +1,292 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+
+
+<html>
+<head>
+    <title>选择施工单位</title>
+    <meta http-equiv="Content-Language" content="zh-cn">
+
+    <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
+    <meta name="CODE_LANGUAGE" content="C#">
+    <meta name="vs_defaultClientScript" content="JavaScript">
+    <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <script src="../dialog/lhgdialog.min.js?skin=iblue"></script>
+    <base target=_self />
+    <script language="javascript">
+
+        var api = frameElement.api, W = api.opener;
+
+        var tValue = W.$.dialog.data('txtId');
+        var tId = W.$.dialog.data('txtName');
+        var tTel = W.$.dialog.data('txtTel');
+        function sendFromChild(checkValues, checkName, checkTel) {
+            tValue.value = checkValues;
+            tId.value = checkName;
+            tTel.value = checkTel;
+            api.close();
+            /*window.returnValue = checkValues + "|" + checkName;
+            window.close();*/
+        }
+        function GetSelectValue() {
+            var wName;
+            wName = window.showModalDialog('../Condition/RoleCondition', '', 'dialogWidth:400px;DialogHeight=500px;status:no;help:no;resizable:no;');
+            if (wName == null) {
+            }
+            else {
+                var ids = wName.split('|');
+                $("#txtUserRoleValue").val(ids[0]);
+                $("#txtUserRole").val(ids[1]);
+            }
+        }
+
+        function onchange1() {
+            var index = 1;
+            var selectedId = $("#txtcompany option:selected").val();
+
+            if (selectedId != null) {
+                if (selectedId == "-1") {
+                    $("#txtdepartment").empty();
+                    $("#txtdepartment").append("<option value='-1'>请选择部门</option>");
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "../Json/GetDepartment",
+                        data: { companyId: selectedId },
+                        dataType: "json",
+                        success: function (data) {
+                            $("#txtdepartment").empty();
+                            $("#txtdepartment").append("<option value='-1'>请选择部门</option>");
+                            if (data != null) {
+                                if (data != "") {
+                                    var json = eval(data);
+                                    var currentIndex = "@Html.Raw(ViewBag.DepartmentId)";
+                                    $(json).each(function (index) {
+                                        var val = json[index];
+                                        //alert(val.Id + " " + val.Name);
+                                        if (val.Id == currentIndex) {
+                                            $("#txtdepartment").append("<option selected='selected' value='" + val.Id + "'>" + val.Name + "</option>");
+                                        } else {
+                                            $("#txtdepartment").append("<option value='" + val.Id + "'>" + val.Name + "</option>");
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    })
+                }
+            };
+        }
+
+
+        function onchange2() {
+            var index = 1;
+            @*var selectedId = "@Html.Raw(ViewBag.DepartmentId)";
+            if (!selectedId || selectedId == "-1") {
+                selectedId = $("#txtdepartment option:selected").val();
+            }*@
+            var selectedId = $("#txtdepartment option:selected").val();
+            if (selectedId) {
+                if (selectedId == "-1") {
+                    $("#txtposition").empty();
+                    $("#txtposition").append("<option value='-1'>请选择职位</option>");
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "../Json/GetPosition",
+                        data: { departmentId: selectedId },
+                        dataType: "json",
+                        success: function (data) {
+                            $("#txtposition").empty();
+                            $("#txtposition").append("<option value='-1'>请选择职位</option>");
+                            if (data != null) {
+                                if (data != "") {
+                                    var json = eval(data);
+                                    var currentIndex = "@Html.Raw(ViewBag.PositionId)";
+                                    $(json).each(function (index) {
+                                        var val = json[index];
+                                        if (val.Id == currentIndex) {
+                                            $("#txtposition").append("<option selected='selected' value='" + val.Id + "'>" + val.Name + "</option>");
+                                        } else {
+                                            $("#txtposition").append("<option value='" + val.Id + "'>" + val.Name + "</option>");
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    })
+                }
+            };
+        }
+
+        function show() {
+            $("#BtnNext").attr("disabled", false);
+            $("#BtnLast").attr("disabled", false);
+            $("#BtnPre").attr("disabled", false);
+            $("#BtnFirst").attr("disabled", false);
+            var CurrentPageIndex = parseInt($("#CurrentPageIndex").val());
+            var CurrentPageCount = parseInt(@(ViewBag.Count != null ? Html.Raw(ViewBag.Count) : Html.Raw(1)));
+
+            if (!isNaN(CurrentPageCount) && !isNaN(CurrentPageIndex)) {
+                if (CurrentPageIndex == CurrentPageCount) {
+                    $("#BtnNext").attr("disabled", "disabled");
+                    $("#BtnLast").attr("disabled", "disabled");
+                }
+
+                if (CurrentPageIndex == 1) {
+                    $("#BtnPre").attr("disabled", "disabled");
+                    $("#BtnFirst").attr("disabled", "disabled");
+                }
+            }
+            var SuccessAndAlert = "@Html.Raw(ViewBag.SuccessAndAlert)";
+            if (SuccessAndAlert != null && SuccessAndAlert != "") {
+                alert(SuccessAndAlert);
+            }
+            onchange1();
+            onchange2();
+
+        }
+
+        function toNextOrPre(operation) {
+            var CurrentPageIndex = parseInt($("#CurrentPageIndex").val());
+            var CurrentPageCount = parseInt(@(ViewBag.Count != null ? Html.Raw(ViewBag.Count) : Html.Raw(1)));
+            if (!isNaN(CurrentPageCount) && !isNaN(CurrentPageIndex)) {
+                var pageIndex = 0;
+                switch (operation) {
+                    case "next":
+                        if (CurrentPageIndex == CurrentPageCount) {
+                            alert("已经是最后一页");
+                            return false;
+                        }
+                        pageIndex = CurrentPageIndex + 1;
+                        break;
+                    case "last":
+                        if (CurrentPageIndex == CurrentPageCount) {
+                            alert("已经是最后一页");
+                            return false;
+                        }
+                        pageIndex = CurrentPageCount;
+                        break;
+                    case "pre":
+                        if (CurrentPageIndex == 1) {
+                            alert("已经是第一页");
+                            return false;
+                        }
+                        pageIndex = CurrentPageIndex - 1;
+                        break;
+                    case "first":
+                        if (CurrentPageIndex == 1) {
+                            alert("已经是第一页");
+                            return false;
+                        }
+                        pageIndex = 1;
+                        break;
+                }
+                if (pageIndex == 0) {
+                    alert("翻页操作内容错误！");
+                    return false;
+                }
+                $("#CurrentPageIndex").val(pageIndex);
+                $("#form1").submit();
+            }
+        }
+    </script>
+</head>
+<body onload="show()">
+    <form name="form1" method="post" id="form1">
+        @{
+            <table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolorlight="#c0c0c0" bordercolordark="#ffffff">
+                <!--tr>
+                    <td colspan="2" style="height: 31px; width: 50%; text-align: center">
+                        公司：/*Html.DropDownList("txtcompany", ViewData["txtcompany"] as SelectList, new { onchange = "onchange1();" })*/
+                        部门：<select id="txtdepartment" name="txtdepartment" onchange="onchange2()">
+                            <option value="-1">请选择部门</option>
+                        </select>
+
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td colspan="2" style="height: 31px; text-align: center">
+                        职位：<select id="txtposition" name="txtposition">
+                            <option value="-1">请选择职位</option>
+                        </select>
+                        角色：<input name="txtUserRoleValue" type="text" id="txtUserRoleValue" onclick="GetSelectValue()" value="@Html.Raw(ViewBag.RoleValue)" style="width:60px;" />
+
+                        <input name="txtUserRole" type="hidden" id="txtUserRole" value="@Html.Raw(ViewBag.RoleId)" style="width:350px;" />
+                    </td>
+                </tr-->
+                <tr>
+                    <td colspan="2" style="height: 31px; text-align: center">
+                        单位名：<input name="userName" type="text" id="userName" style="height:20px;width:100px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="height: 31px; text-align: center">
+                        <input type="submit" name="ImageButton4" id="ImageButton4" src="../images/Button/BtnSerch.jpg" value="提交" align="absmiddle" style="border-width:0px;" />
+                        <input type="button" name="ImageButton5" id="ImageButton5" src="../images/Button/BtnSerch.jpg" onclick="sendFromChild('','')" value="清空" align="absmiddle" style="border-width:0px;" /><br /><br />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center">
+
+                        <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
+                            <tr>
+                                <td colspan="2" style="height: 31px; text-align: center;">
+                                    <div>
+                                        <table cellspacing="0" rules="all" border="1" id="GridView1" style="border-width:1px;border-style:solid;width:100%;border-collapse:collapse;">
+
+                                            @{
+                                                List<JianTongBLL.DesignUnit> user = ViewBag.List as List<JianTongBLL.DesignUnit>;
+                                                if (user != null)
+                                                {
+                                                    foreach (JianTongBLL.DesignUnit u in user)
+                                                    {
+                                                        string connect = "";
+                                                        if (!string.IsNullOrWhiteSpace(u.ConnectName))
+                                                        {
+                                                            connect += u.ConnectName + "--";
+                                                        }
+                                                        if (!string.IsNullOrWhiteSpace(u.Tel))
+                                                        {
+                                                            connect += u.Tel;
+                                                        }
+                                                        <tr align="center" style="height:20px;">
+                                                            <td>
+                                                                <a onclick="sendFromChild('@u.Id','@u.Name','@connect')">@u.Name</a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-top: #000000 1px solid;border-bottom: #000000 1px solid">
+                        <input name="BtnFirst" id="BtnFirst" onclick="toNextOrPre('first')" value="首页" src="../images/Button/First.jpg" style="border-width:0px;" type="button">
+                        <input name="BtnPre" id="BtnPre" onclick="toNextOrPre('pre')" value="上一页" src="../images/Button/Pre.jpg" style="border-width:0px;" type="button">
+                        <input name="BtnNext" id="BtnNext" onclick="toNextOrPre('next')" value="下一页" src="../images/Button/Next.jpg" style="border-width:0px;" type="button">
+                        <input name="BtnLast" id="BtnLast" onclick="toNextOrPre('last')" value="末页" src="../images/Button/Last.jpg" style="border-width:0px;" type="button">
+                        &nbsp;第<input readonly="readonly" id="CurrentPageIndex" name="CurrentPageIndex" value="@(ViewBag.PageIndex != null ? Html.Raw(ViewBag.PageIndex) : Html.Raw(1))" style="width:25px" />页&nbsp;
+                        共<input readonly="readonly" id="CurrentPageCount" name="CurrentPageCount" value="@(ViewBag.Count != null ? Html.Raw(ViewBag.Count) : Html.Raw(1))" style="width:25px" />页&nbsp;
+                        @*<input name="PageSize" value="@(ViewBag.PageSize != null ? Html.Raw(ViewBag.PageSize) : Html.Raw(15))" id="PageSize" class="TextBoxCssUnder2" style="height:20px;width:35px;" type="text">
+                            行每页 &nbsp; 转到第<input name="PageIndex" value="@(ViewBag.PageIndex != null ? Html.Raw(ViewBag.PageIndex) : Html.Raw(1))" id="PageIndex" class="TextBoxCssUnder2" style="height:20px;width:33px;" type="text">
+                            页&nbsp;
+                            <input name="ButtonGo" id="ButtonGo" onclick="toGo();" style="width:50px; border-width: 0px; background: url('../images/Button/Jump.jpg') no-repeat" type="button">*@
+                    </td>
+                </tr>
+            </table>
+        }
+    </form>
+</body>
+</html>

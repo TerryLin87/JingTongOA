@@ -1,0 +1,421 @@
+﻿@{
+    Layout = null;
+
+    List<JianTongBLL.WorkInfoClass> list = ViewBag.WorkList as List<JianTongBLL.WorkInfoClass>;
+    int pageSize = ViewBag.PageSize;
+    int pageIndex = ViewBag.PageIndex;
+    int pageCount = ViewBag.Count;
+    int CurrentUserId = ViewBag.CurrentUserId;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>DataTables | Gentelella</title>
+
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- Datatables -->
+    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+    <form id="form1" method="post" name=" form1">
+        <div class="container body">
+            <div class="main_container">
+                <div class="col-md-3 left_col">
+                    <div class="left_col scroll-view">
+
+                        <div class="clearfix"></div>
+
+                        <!-- sidebar menu -->
+                        @Html.Action("SideMenu", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+                        <!-- /sidebar menu -->
+                        <!-- /menu footer buttons -->
+                        <div class="sidebar-footer hidden-small">
+                            <a data-toggle="tooltip" data-placement="top" title="Settings">
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Lock">
+                                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                        <!-- /menu footer buttons -->
+                    </div>
+                </div>
+
+                <!-- top navigation -->
+
+                @Html.Action("TopNavigation", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+                <!-- /top navigation -->
+                <!-- page content -->
+                <div class="right_col" role="main">
+                    <div class="">
+                        <div class="page-title">
+
+                            <div>
+                                <div class="col-md-2 col-sm-2 col-xs-12 form-group ">
+                                    <input type="text" class="form-control" placeholder="查找工作名称" name="workName" id="workName" value="@ViewBag.WorkName">
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12 form-group ">
+                                    <input type="text" class="form-control" placeholder="开始时间" value="@ViewBag.startTime" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm' })" readonly="readonly" name="startTime" id="startTime">
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12 form-group ">
+                                    <input type="text" class="form-control" placeholder="结束时间" value="@ViewBag.endTime" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm' })" readonly="readonly" name="endTime" id="endTime">
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12 form-group ">
+                                    <div class="input-group">
+                                        <select class="form-control" id="workState" name="workState">
+                                            <option value="-1" @(ViewBag.WorkState == "-1" ? "selected='selected'" : "")>选择工作状态</option>
+                                            <option value="0" @(ViewBag.WorkState == "0" ? "selected='selected'" : "")>待分配人员</option>
+                                            <option value="1" @(ViewBag.WorkState == "1" ? "selected='selected'" : "")>工作开始</option>
+                                            <option value="2" @(ViewBag.WorkState == "2" ? "selected='selected'" : "")>待专业复核</option>
+                                            <option value="3" @(ViewBag.WorkState == "3" ? "selected='selected'" : "")>待项目复核</option>
+                                            <option value="4" @(ViewBag.WorkState == "4" ? "selected='selected'" : "")>待归档</option>
+                                            <option value="5" @(ViewBag.WorkState == "5" ? "selected='selected'" : "")>待产值计算</option>
+                                            <option value="7" @(ViewBag.WorkState == "7" ? "selected='selected'" : "")>待财务确认</option>
+                                            <option value="8" @(ViewBag.WorkState == "8" ? "selected='selected'" : "")>待验收工作</option>
+                                            <option value="9" @(ViewBag.WorkState == "9" ? "selected='selected'" : "")>已验收</option>
+                                            <option value="10" @(ViewBag.WorkState == "10" ? "selected='selected'" : "")>已取消</option>
+                                        </select>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button" onclick="toPageIndex(1)">查询</button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+
+                                <div class="x_content">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr class="headings">
+                                                    <th class="column-title">编号 </th>
+                                                    <th class="column-title">工作名称 </th>
+                                                    <th class="column-title">创建人 </th>
+                                                    <th class="" style="width:9%">主编审人 </th>
+                                                    <th class="" style="width:9%">负责人</th>
+                                                    <th class="" style="width:9%">开始时间</th>
+                                                    <th class="" style="width:9%">结束时间</th>
+                                                    <th class="column-title">完成进度 </th>
+                                                    <th class="column-title">状态 </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                @if (list != null && list.Count() > 0)
+                                                {
+                                                    foreach (JianTongBLL.WorkInfoClass workInfoClass in list)
+                                                    {
+                                                        int Proportion = 0;
+                                                        int finishMember = 0;
+                                                        List<JianTongBLL.WorkMemberClass> memberList = JianTongFun.EntityFun.CreateInstance.WorkMemberList(workInfoClass.Id);
+                                                        bool myWorkFinished = false;
+                                                        if (memberList != null && memberList.Count > 0)
+                                                        {
+                                                            foreach (JianTongBLL.WorkMemberClass workMember in memberList)
+                                                            {
+                                                                if (workMember.isFinished)
+                                                                {
+                                                                    finishMember += 1;
+                                                                    if (workMember.userId == CurrentUserId)
+                                                                    {
+                                                                        myWorkFinished = true;
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            if (finishMember > 0 && memberList.Count > 0)
+                                                            {
+                                                                Proportion = finishMember * 100 / memberList.Count;
+                                                            }
+                                                        }
+                                                        String stateValue = "";
+                                                        String url = "";
+                                                        if (workInfoClass.StateNow == JianTongBLL.WorkState.Distributed && !myWorkFinished)
+                                                        {
+                                                            url = "../WorkManager/FinishWork?workId=" + workInfoClass.Id;
+                                                        }
+                                                        else
+                                                        {
+                                                            url = "../WorkManager/WorkDetail?workId=" + workInfoClass.Id;
+                                                        }
+                                                        //JianTongBLL.JianTongUserClass CreateUser = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.JianTongUserClass>(workInfoClass.UserId);
+                                                        <tr class="even pointer">
+                                                            <td class=" ">@(!string.IsNullOrWhiteSpace(workInfoClass.WorkCode) ? workInfoClass.WorkCode : "待填写") </td>
+                                                            <td class=" ">
+                                                                <a href="@url" style="text-decoration: underline; text-align: center">@workInfoClass.Name</a>
+                                                            </td>
+                                                            <td class=" ">@workInfoClass.UserName </td>
+                                                            <td class=" ">@workInfoClass.mainEditorName </td>
+                                                            <td class=" ">@workInfoClass.chargeManName</td>
+                                                            <td class=" ">@(workInfoClass.StartTime != DateTime.MinValue ? workInfoClass.StartTime.ToString("yyyy-MM-dd") : "")</td>
+                                                            <td class=" ">@(workInfoClass.EndTime != DateTime.MinValue ? workInfoClass.EndTime.ToString("yyyy-MM-dd") : "")</td>
+                                                            <td class="project_progress">
+                                                                <div class="progress progress_sm">
+                                                                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="@Proportion"></div>
+                                                                </div>
+                                                                <small>@Proportion % 完成</small>
+                                                            </td>
+                                                            <td class=" ">
+                                                                @switch (workInfoClass.StateNow)
+                                                                {
+                                                                    case JianTongBLL.WorkState.Created:
+                                                                        stateValue = "待分配人员";
+                                                                        break;
+                                                                    case JianTongBLL.WorkState.Distributed:
+                                                                        stateValue = "工作开始";
+                                                                        break;
+                                                                    case JianTongBLL.WorkState.WorkDone:
+                                                                        stateValue = "待专业复核";
+                                                                        break;
+                                                                    case JianTongBLL.WorkState.ProfessionalReviewed:
+                                                                        stateValue = "待项目复核";
+                                                                        break;
+                                                                    case JianTongBLL.WorkState.ProjectReviewed:
+                                                                        stateValue = "待归档";
+                                                                        break;
+                                                                    case JianTongBLL.WorkState.Filed:
+                                                                        stateValue = "已上传文件";
+                                                                        break;
+                                                                    /*case JianTongBLL.WorkState.FiledChecked:
+                                                                        stateValue = "待产值计算";
+                                                                        break;*/
+                                                                    case JianTongBLL.WorkState.ValueCalculated:
+                                                                        stateValue = "待财务确认";
+                                                                        break;
+                                                                    case JianTongBLL.WorkState.FinanceChecked:
+                                                                        stateValue = "待完结确认";
+                                                                        break;
+                                                                    case JianTongBLL.WorkState.Finished:
+                                                                        stateValue = "工作完成";
+                                                                        break;
+                                                                }
+                                                                @stateValue
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="col-sm-3">
+                                            <select class="form-control" id="pageSize1">
+                                                <option id="2" value="30" @(pageSize == 30 ? "selected='selected'" : "")>30条/页</option>
+                                                <option id="3" value="50" @(pageSize == 50 ? "selected='selected'" : "")>50条/页</option>
+                                                <option id="4" value="70" @(pageSize == 70 ? "selected='selected'" : "")>70条/页</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="datatable-checkbox_paginate">
+                                            <ul class="pagination" style="margin-top:0" id="pageIndexArea">
+                                                @{
+                                                    if (pageIndex == 1)
+                                                    {
+                                                        if (pageCount > 1)
+                                                        {
+                                                            <li class="paginate_button previous disabled" id="datatable-checkbox_previous">
+                                                                <a tabindex="0" aria-controls="datatable-checkbox" onclick="toNextOrPre('pre')" data-dt-idx="0">Previous</a>
+                                                            </li>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <li class="paginate_button previous" id="datatable-checkbox_previous">
+                                                            <a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="0">Previous</a>
+                                                        </li>
+                                                        <li class="paginate_button">
+                                                            <a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">1</a>
+                                                        </li>
+                                                    }
+
+                                                    if (pageIndex > 5)
+                                                    {
+                                                        <li class="paginate_button disabled"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">...</a></li>
+                                                    }
+                                                    if (pageIndex - 2 > 1)
+                                                    {
+                                                        <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@(pageIndex - 2)</a></li>
+                                                    }
+
+                                                    if (pageIndex - 1 > 1)
+                                                    {
+                                                        <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@(pageIndex - 1)</a></li>
+                                                    }
+                                                    <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@pageIndex</a></li>
+                                                    if (pageIndex + 1 < pageCount - 2)
+                                                    {
+                                                        <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@(pageIndex + 1)</a></li>
+                                                    }
+
+                                                    if (pageIndex + 2 < pageCount - 1)
+                                                    {
+                                                        <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@(pageIndex + 2)</a></li>
+                                                    }
+
+                                                    if (pageIndex < pageCount && (pageCount - pageIndex) > 3)
+                                                    {
+                                                        <li class="paginate_button disabled"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">...</a></li>
+                                                    }
+                                                    if (pageCount > 1)
+                                                    {
+                                                        if (pageIndex == pageCount)
+                                                        {
+                                                            <li class="paginate_button active"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@pageCount</a></li>
+                                                        }
+                                                        else
+                                                        {
+                                                            <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@pageCount</a></li>
+                                                            <li class="paginate_button next" id="datatable-checkbox_next"><a tabindex="0" aria-controls="datatable-checkbox" onclick="toNextOrPre('next')" data-dt-idx="7">Next</a></li>
+                                                        }
+                                                    }
+                                                }
+
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <input id="pageSize" name="pageSize" value="@pageSize" type="hidden" />
+                                    <input id="pageIndex" name="pageIndex" value="@pageIndex" type="hidden" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /page content -->
+                <!-- footer content -->
+                <!-- /footer content -->
+            </div>
+        </div>
+    </form>
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <!-- Datatables -->
+    <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="../vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="../vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../vendors/pdfmake/build/vfs_fonts.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+    <script type="text/javascript">
+
+        function onChangePageSize() {
+
+            $("#pageSize").val($('#pageSize1 option:selected').val());
+            $("#form1").submit();
+        }
+        function toNextOrPre(operation) {
+            var CurrentPageIndex = parseInt($("#pageIndex").val());
+            var CurrentPageCount = parseInt($("#pageSize").val());
+            if (!isNaN(CurrentPageCount) && !isNaN(CurrentPageIndex)) {
+                var pageIndex = 0;
+                switch (operation) {
+                    case "next":
+                        if (CurrentPageIndex == CurrentPageCount) {
+                            alert("已经是最后一页");
+                            return false;
+                        }
+                        pageIndex = CurrentPageIndex + 1;
+                        break;
+                    case "last":
+                        if (CurrentPageIndex == CurrentPageCount) {
+                            alert("已经是最后一页");
+                            return false;
+                        }
+                        pageIndex = CurrentPageCount;
+                        break;
+                    case "pre":
+                        if (CurrentPageIndex == 1) {
+                            alert("已经是第一页");
+                            return false;
+                        }
+                        pageIndex = CurrentPageIndex - 1;
+                        break;
+                    case "first":
+                        if (CurrentPageIndex == 1) {
+                            alert("已经是第一页");
+                            return false;
+                        }
+                        pageIndex = 1;
+                        break;
+                }
+                if (pageIndex == 0) {
+                    alert("翻页操作内容错误！");
+                    return false;
+                }
+                $("#pageIndex").val(pageIndex);
+                $("#form1").submit();
+            }
+        }
+
+        function toPageIndex(pageIndex){
+            if (pageIndex <= 0) {
+                pageIndex = 1;
+            }
+            if (pageIndex > @pageCount){
+                pageIndex = @pageCount;
+            }
+            $("#pageIndex").val(pageIndex);
+            $("#form1").submit();
+
+        }
+    </script>
+
+</body>
+</html>

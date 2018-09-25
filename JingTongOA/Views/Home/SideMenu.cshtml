@@ -1,0 +1,177 @@
+﻿@{
+    JianTongBLL.UserRole userRole = ViewBag.UserRole as JianTongBLL.UserRole;
+}
+
+<div class="col-md-3 left_col">
+    <div class="left_col scroll-view">
+        <!--div class="navbar nav_title" style="border: 0;">
+            <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+        </div-->
+
+        <div class="clearfix"></div>
+
+        <!-- menu profile quick info -->
+        <div class="profile clearfix">
+            <div class="profile_pic">
+                <a href="../Home/Index"><img src="../images/img.jpg" alt="..." class="img-circle profile_img"></a>
+            </div>
+            <div class="profile_info">
+                <span>欢迎,</span>
+                <h2>@ViewBag.UserName</h2>
+            </div>
+        </div>
+        <!-- /menu profile quick info -->
+
+        <br />
+
+        <!-- sidebar menu -->
+        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+            <div class="menu_section">
+                <h3>General</h3>
+                <ul class="nav side-menu">
+                    <li>
+                        <a><i class="fa fa-home"></i> 工作管理 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_1"))
+                            {
+                                <li><a href="../WorkManager/WorkManager">工作管理</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_13"))
+                            {
+                                <li><a href="../WorkManager/OutTimeWorkList">超时工作管理</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_14"))
+                            {
+                                <li><a href="../WorkManager/MyOutTimeWorkList">我超时的工作</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_2"))
+                            {
+                                <li><a href="../WorkManager/AddWork">工作登记</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_3"))
+                            {
+                                <li><a href="../WorkManager/MyWorkList">我的工作</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_4"))
+                            {
+                                <li><a href="../WorkManager/DistributeWorkList">待分配工作</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_5"))
+                            {
+                                <li><a href="../WorkManager/NeedFinishWorkList">待完成工作</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_6"))
+                            {
+                                <li><a href="../WorkManager/NeedProfessionReviewList">专业复核列表</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_7"))
+                            {
+                                <li><a href="../WorkManager/ProjectReviewList">项目复核列表</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_8"))
+                            {
+                                <li><a href="../WorkManager/NeedFileList">归档工作列表</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_9"))
+                            {
+                                <li><a href="../WorkManager/NeedFileCheckList">确认归档工作列表</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_10"))
+                            {
+                                <li><a href="../WorkManager/NeedValueCalculateList">计算产值工作列表</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_11"))
+                            {
+                                <li><a href="../WorkManager/NeedFinanceCheckList">财务确认工作列表</a></li>
+                            }
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "work_12"))
+                            {
+                                <li><a href="../WorkManager/FinishCheckList">验收工作列表</a></li>
+                            }
+                        </ul>
+                    </li>
+                    <li>
+                        <a><i class="fa fa-edit"></i> 企业组织信息 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="../Organization/MyCompany">我的公司信息</a></li>
+                            <li><a href="../Organization/MyUserInfo">我的资料</a></li>
+
+
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "organization_1"))
+                            {
+                                <li><a href="../Organization/CompanyList">公司信息管理</a></li>
+                            }
+
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "organization_2"))
+                            {
+                                <li><a href="../Organization/UserList">用户信息管理</a></li>
+                            }
+
+                            @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "organization_3"))
+                            {
+                                <li><a href="../Organization/RoleList">角色权限管理</a></li>
+                            }
+                        </ul>
+                    </li>
+
+                    @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "workConfig_1"))
+                    {
+                        <li>
+                            <a><i class="fa fa-edit"></i> 工作基础信息配置 <span class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a href="../WorkManager/InvestmentTypeList">投资类型配置</a></li>
+                                <li><a href="../WorkManager/ProductTypeList">项目类型配置</a></li>
+                                <li><a href="../WorkManager/ConsultationTypeList">咨询类型配置</a></li>
+                                <li><a href="../WorkManager/ProductSourceList">项目来源配置</a></li>
+                                <li><a href="../WorkManager/ValuationTypeList">计价方式配置</a></li>
+                                <li><a href="../WorkManager/DevelopUnitList">施工单位配置</a></li>
+                                <li><a href="../WorkManager/ConstructionUnitList">建设单位配置</a></li>
+                                <li><a href="../WorkManager/DesignUnitList">设计单位配置</a></li>
+                                <li><a href="../WorkManager/SupervisorUnitList">监理单位配置</a></li>
+                                <li><a href="../WorkManager/WorkFileList">资料清单配置</a></li>
+                                <li><a href="../WorkManager/NormalConfigList">配置清单配置</a></li>
+                            </ul>
+                        </li>
+                    }
+
+                    @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "financeCheck_1"))
+                    {
+                        <li>
+                            <a><i class="fa fa-edit"></i> 财务统计列表 <span class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a href="../WorkManager/FinanceWorkList">投资类型配置</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (JianTongFun.EntityFun.CreateInstance.JudgeHasJurisdiction(userRole, "fileWork_1"))
+                    {
+                        <li>
+                            <a><i class="fa fa-edit"></i> 归档文件夹 <span class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a href="../WorkManager/FiledWorkList">归档文件</a></li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <!-- /sidebar menu -->
+        <!-- /menu footer buttons -->
+        <div class="sidebar-footer hidden-small">
+            <a data-toggle="tooltip" data-placement="top" title="Settings">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            </a>
+            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+            </a>
+            <a data-toggle="tooltip" data-placement="top" title="Lock">
+                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+            </a>
+            <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+            </a>
+        </div>
+        <!-- /menu footer buttons -->
+    </div>
+</div>

@@ -1,0 +1,852 @@
+﻿
+@{
+    Layout = null;
+    List<JianTongBLL.WorkMemberClass> memberList = ViewBag.MemberList as List<JianTongBLL.WorkMemberClass>;
+    JianTongBLL.WorkInfoClass workInfo = ViewBag.WorkInfo as JianTongBLL.WorkInfoClass;
+
+    List<JianTongBLL.WorkFile> fileList = ViewBag.FileList as List<JianTongBLL.WorkFile>;
+    List<JianTongBLL.WorkFileType> fileTypeList = ViewBag.FileType as List<JianTongBLL.WorkFileType>;
+    string companyName = "", investName = "", productTypeName = "", cTypeName = "", productSourceName = "", vName = "";
+
+    if (workInfo != null)
+    {
+        companyName = workInfo.companyName;
+        JianTongBLL.InvestmentType investmentType = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.InvestmentType>(workInfo.investmentType);
+        if (investmentType != null)
+        {
+            investName = investmentType.Name;
+        }
+
+        JianTongBLL.ProductType ProductType = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.ProductType>(workInfo.productType);
+        if (ProductType != null)
+        {
+            productTypeName = ProductType.Name;
+        }
+
+        JianTongBLL.ConsultationType ConsultationType = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.ConsultationType>(workInfo.consultationType);
+        if (ConsultationType != null)
+        {
+            cTypeName = ConsultationType.Name;
+        }
+
+        JianTongBLL.ProductSource ProductSource = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.ProductSource>(workInfo.productSource);
+        if (ProductSource != null)
+        {
+            productSourceName = ProductSource.Name;
+        }
+
+        JianTongBLL.ValuationType ValuationType = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.ValuationType>(workInfo.valuationType);
+        if (ValuationType != null)
+        {
+            vName = ValuationType.Name;
+        }
+
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>Gentelella Alela! | </title>
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="../vendors/select2/dist/css/select2.min.css" rel="stylesheet">
+    <!-- Switchery -->
+    <link href="../vendors/switchery/dist/switchery.min.css" rel="stylesheet">
+    <!-- starrr -->
+    <link href="../vendors/starrr/dist/starrr.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md" onload="onshowFun()">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+
+                    <div class="clearfix"></div>
+
+
+                    <!-- sidebar menu -->
+                    @Html.Action("SideMenu", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+                    <!-- /sidebar menu -->
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Lock">
+                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+
+            <!-- top navigation -->
+            @Html.Action("TopNavigation", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+            <!-- /top navigation -->
+            <!-- page content -->
+            <div class="right_col" role="main">
+                <div class="">
+                    <div class="page-title">
+                        <div class="title_left">
+                            <h3>财务确认</h3>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+
+                                <div class="x_content">
+                                    <br />
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="x_content">
+                                            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                                                <ul id="myTab1" class="nav nav-tabs bar_tabs left" role="tablist">
+                                                    <li role="presentation" class="active">
+                                                        <a href="#tab_content_value" role="tab" id="profile-tabb3" data-toggle="tab" aria-controls="profile" aria-expanded="false">产值计算</a>
+                                                    </li>
+                                                    <li role="presentation" class="">
+                                                        <a href="#tab_content_workInfo" role="tab" id="profile-tabb4" data-toggle="tab" aria-controls="home" aria-expanded="false">工作详情</a>
+                                                    </li>
+                                                    <li role="presentation" class="">
+                                                        <a href="#tab_content_person" role="tab" id="profile-tabb2" data-toggle="tab" aria-controls="profile" aria-expanded="false">人员分配</a>
+                                                    </li>
+
+                                                    <li role="presentation" class="">
+                                                        <a href="#tab_content_file" role="tab" id="profile-tabb1" data-toggle="tab" aria-controls="profile" aria-expanded="false">工作文件列表</a>
+                                                    </li>
+                                                </ul>
+                                                <div id="myTabContent2" class="tab-content">
+                                                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content_value" aria-labelledby="profile-tab">
+                                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                                            <select class="form-control " id="invoiceTypeSelect" name="invoiceTypeSelect">
+
+                                                                <option value="-1" @(workInfo != null && workInfo.invoiceType == -1 ? "selected='selected'" : "")>选择开票类型</option>
+                                                                <option value="1" @(workInfo != null && workInfo.invoiceType == 1 ? "selected='selected'" : "")>已开票未到账</option>
+                                                                <option value="2" @(workInfo != null && workInfo.invoiceType == 2 ? "selected='selected'" : "")>已开票已到账</option>
+                                                                <option value="3" @(workInfo != null && workInfo.invoiceType == 3 ? "selected='selected'" : "")>为开票</option>
+
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="x_panel">
+
+                                                                <div class="x_content">
+
+
+                                                                    <div class="table-responsive">
+                                                                        <table class="table table-striped jambo_table bulk_action">
+                                                                            <thead>
+                                                                                <tr class="headings">
+                                                                                    <th class="column-title">完成人 </th>
+                                                                                    <th class="column-title">是否为组长 </th>
+                                                                                    <th class="column-title">产值计算 </th>
+                                                                                    <th class="column-title">产值计算公式 </th>
+                                                                                    <th class="column-title">财务确认 </th>
+                                                                                    <th class="column-title">到账日期 </th>
+                                                                                </tr>
+                                                                            </thead>
+
+                                                                            <tbody id="valList">
+                                                                                @if (memberList != null && memberList.Count() > 0)
+                                                                                {
+                                                                                    foreach (JianTongBLL.WorkMemberClass memberClass in memberList)
+                                                                                    {
+                                                                                        string valId = "valType-" + memberClass.Id;
+                                                                                        string financeValId = "financeVal-" + memberClass.Id;
+                                                                                        string accountDateId = "accountDate-" + memberClass.Id;
+                                                                                        string financeCheckId = "financeCheck-" + memberClass.Id;
+                                                                                        JianTongBLL.JianTongUserClass userInfo = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.JianTongUserClass>(memberClass.userId);
+                                                                                        //JianTongBLL.JianTongUserClass CreateUser = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.JianTongUserClass>(workInfoClass.UserId);
+                                                                                        <tr class="even pointer" name="valtrList">
+
+                                                                                            <td class=" ">@userInfo.TrueName </td>
+                                                                                            <td class=" ">@(memberClass.isTeamLead == 1 ? "是" : "否") </td>
+                                                                                            <td class="valTd">
+                                                                                                @memberClass.projectValue
+                                                                                            </td>
+                                                                                            <td class="valTd">
+                                                                                                @memberClass.projectFormula
+                                                                                            </td>
+                                                                                            <td class="valTd">
+                                                                                                @memberClass.financeValue
+                                                                                            </td>
+                                                                                            <td class="valTd">
+                                                                                                @memberClass.accountDate
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    }
+                                                                                }
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div role="tabpanel" class="tab-pane fade" id="tab_content_workInfo" aria-labelledby="home-tab">
+
+                                                        <div class="row">
+                                                            @if (workInfo != null)
+                                                            {
+                                                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                                                        <div class="x_content">
+                                                                            <br />
+                                                                            <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        主编审人 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.mainEditorName
+                                                                                    </span>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        项目负责人 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.chargeManName
+                                                                                    </span>
+                                                                                </div>
+
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="last-name">
+                                                                                        项目合同 <span class="required">*</span>
+                                                                                    </label>
+
+                                                                                    <span class="control-label col-md-8" style="text-align:left">
+                                                                                        @workInfo.contractName
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="last-name">
+                                                                                        项目名称 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-8" style="text-align:left">
+                                                                                        @workInfo.Name
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        所属公司 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.companyName
+                                                                                    </span>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        签订日期
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.SignDate.ToString("yyyy-MM-dd")
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        建设单位 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.ConstructionUnitName
+                                                                                    </span>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        施工单位
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.DevelopUnitName
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        建设单位电话 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.ConstructionUnitTel
+                                                                                    </span>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        施工单位电话
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.DevelopUnitTel
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        省、市 <span class="required">*</span>
+                                                                                    </label>
+
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.province
+                                                                                    </span>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        所在地 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.location
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="last-name">
+                                                                                        建设规模 <span class="required">*</span>
+                                                                                    </label>
+
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.scaleOfConstruction
+                                                                                    </span>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="last-name">
+                                                                                        承办部门 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.undertakingUnit
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        投资类型 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left">
+                                                                                        @investName
+                                                                                    </label>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        项目类型 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left">
+                                                                                        @productTypeName
+                                                                                    </label>
+                                                                                </div>
+
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        咨询类型 <span class="required">*</span>
+                                                                                    </label>
+
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left">
+                                                                                        @cTypeName
+                                                                                    </label>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        紧急度 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                                                                        <select class="form-control">
+                                                                                            <option>选择紧急度</option>
+                                                                                            <option value="1" @Html.Raw(workInfo.emergencyDegree == 1 ? "selected='selected'" : "")>一般</option>
+                                                                                            <option value="2" @Html.Raw(workInfo.emergencyDegree == 2 ? "selected='selected'" : "")>紧急</option>
+                                                                                            <option value="3" @Html.Raw(workInfo.emergencyDegree == 3 ? "selected='selected'" : "")>非常紧急</option>
+</div>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        项目来源
+                                                                                    </label>
+
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left">
+                                                                                        @productSourceName
+                                                                                    </label>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        计价方式
+                                                                                    </label>
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" style="text-align:left">
+                                                                                        @vName
+                                                                                    </label>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        合同金额(万元)
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @(workInfo.investMoney)
+                                                                                    </span>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        送审金额(万元)
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @(workInfo.jiananMoney)
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        开始时间 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.StartTime.ToString("yyyy-MM-dd")
+                                                                                    </span>
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                                                        计划完成时间 <span class="required">*</span>
+                                                                                    </label>
+                                                                                    <span class="control-label col-md-3" style="text-align:left">
+                                                                                        @workInfo.EndTime.ToString("yyyy-MM-dd")
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12">咨询费用</label>
+
+                                                                                    <span class="control-label col-md-8" style="text-align:left">
+                                                                                        @workInfo.consultationMoney
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="col-md-2 col-sm-2 col-xs-12 control-label">
+                                                                                        专业工程
+                                                                                    </label>
+
+                                                                                    <span class="control-label col-md-8" style="text-align:left">
+                                                                                        @workInfo.majorProject
+                                                                                    </span>
+
+                                                                                </div>
+                                                                                <div class="col-md-10 col-sm-10 col-xs-12">
+                                                                                    <div class="x_content">
+                                                                                        <div class="" role="tabpanel" data-example-id="togglable-tabs1">
+                                                                                            <ul id="myTab2" class="nav nav-tabs bar_tabs right" role="tablist">
+                                                                                                <li role="presentation" class="">
+                                                                                                    <a href="#tab_content111" id="home-tabb" role="tab" data-toggle="tab" aria-controls="profile" aria-expanded="false">资料清单</a>
+                                                                                                </li>
+                                                                                                <li role="presentation" class="">
+                                                                                                    <a href="#tab_content222" role="tab" id="profile-tabb22" data-toggle="tab" aria-controls="profile" aria-expanded="false">实施方案</a>
+                                                                                                </li>
+                                                                                                <li role="presentation" class="">
+                                                                                                    <a href="#tab_content333" role="tab" id="profile-tabb33" data-toggle="tab" aria-controls="profile" aria-expanded="false">交办事宜</a>
+                                                                                                </li>
+                                                                                                <li role="presentation" class="active">
+                                                                                                    <a href="#tab_content444" role="tab" id="profile-tabb44" data-toggle="tab" aria-controls="home" aria-expanded="true">基本概况</a>
+                                                                                                </li>
+                                                                                            </ul>
+                                                                                            <div id="myTabContent3" class="tab-content">
+                                                                                                <div role="tabpanel" class="tab-pane fade " id="tab_content111" aria-labelledby="profile-tab">
+                                                                                                    <p>
+                                                                                                        <div class="x_panel">
+
+                                                                                                            <div class="x_content">
+                                                                                                                <div class="table-responsive">
+                                                                                                                    <table class="table table-striped jambo_table bulk_action">
+                                                                                                                        <thead>
+                                                                                                                            <tr class="headings">
+                                                                                                                                <th>
+                                                                                                                                    <input type="checkbox" id="check-all">
+                                                                                                                                </th>
+                                                                                                                                <th class="column-title">序号 </th>
+                                                                                                                                <th class="column-title">清单名称 </th>
+                                                                                                                                <th class="column-title">份数 </th>
+                                                                                                                                <th class="column-title">原件 </th>
+                                                                                                                                <th class="column-title">送交人 </th>
+                                                                                                                            </tr>
+                                                                                                                        </thead>
+
+                                                                                                                        <tbody>
+                                                                                                                            <tr class="even pointer">
+                                                                                                                                <td class="a-center ">
+                                                                                                                                    <input type="checkbox" name="table_records">
+                                                                                                                                </td>
+                                                                                                                                <td class=" ">1</td>
+                                                                                                                                <td class=" ">121000040</td>
+                                                                                                                                <td class=" ">May 23, 2014 11:47:56 PM </td>
+                                                                                                                                <td class=" ">121000210 </td>
+                                                                                                                                <td class=" ">John Blank L</td>
+                                                                                                                            </tr>
+                                                                                                                        </tbody>
+                                                                                                                    </table>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </p>
+                                                                                                </div>
+                                                                                                <div role="tabpanel" class="tab-pane fade" id="tab_content222" aria-labelledby="profile-tab">
+                                                                                                    <p>
+                                                                                                        <div class="form-group">
+                                                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                                                                实施方案编制依据
+                                                                                                            </label>
+                                                                                                            <span class="control-label col-md-9" style="text-align:left">
+                                                                                                                @workInfo.programme1
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </p>
+                                                                                                    <p>
+                                                                                                        <div class="form-group">
+                                                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                                                                咨询依据、原则、标准、方式（咨询要求）
+                                                                                                            </label>
+                                                                                                            <span class="control-label col-md-9" style="text-align:left">
+                                                                                                                @workInfo.programme2
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </p>
+                                                                                                    <p>
+                                                                                                        <div class="form-group">
+                                                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                                                                项目实施计划安排
+                                                                                                            </label>
+                                                                                                            <span class="control-label col-md-9" style="text-align:left">
+                                                                                                                @workInfo.programme3
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </p>
+                                                                                                    <p>
+                                                                                                        <div class="form-group">
+                                                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                                                                咨询质量目标
+                                                                                                            </label>
+                                                                                                            <span class="control-label col-md-9" style="text-align:left">
+                                                                                                                @workInfo.programme4
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </p>
+                                                                                                    <p>
+                                                                                                        <div class="form-group">
+                                                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                                                                咨询操作过程中重点、难点的具体实施措施
+                                                                                                            </label>
+                                                                                                            <span class="control-label col-md-9" style="text-align:left">
+                                                                                                                @workInfo.programme5
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </p>
+                                                                                                </div>
+                                                                                                <div role="tabpanel" class="tab-pane fade" id="tab_content333" aria-labelledby="profile-tab">
+                                                                                                    @*<p>
+                                                                                                        <div class="form-group">
+                                                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                                                                咨询范围、咨询目标
+                                                                                                            </label>
+
+                                                                                                            <span class="control-label col-md-9" style="text-align:left">
+                                                                                                                @workInfo.matter1
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </p>*@
+                                                                                                    <p>
+                                                                                                        <div class="form-group">
+                                                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                                                                委托单位交代事项（咨询要求）
+                                                                                                            </label>
+                                                                                                            <span class="control-label col-md-9" style="text-align:left">
+                                                                                                                @workInfo.matter2
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </p>
+                                                                                                    <p>
+                                                                                                        <div class="form-group">
+                                                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                                                                咨询操作中需要注意的重点、难点
+                                                                                                            </label>
+                                                                                                            <span class="control-label col-md-9" style="text-align:left">
+                                                                                                                @workInfo.matter3
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </p>
+                                                                                                </div>
+                                                                                                <div role="tabpanel" class="tab-pane fade  active in" id="tab_content444" aria-labelledby="profile-tabb44">
+                                                                                                    <p>
+                                                                                                        <div class="form-group">
+                                                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                                                                项目概况 <span class="required">*</span>
+                                                                                                            </label>
+                                                                                                            <span class="control-label col-md-9" style="text-align:left">
+                                                                                                                @workInfo.projectOverview
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </p>
+                                                                                                    <p>
+                                                                                                        <div class="form-group">
+                                                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                                                                业主要求 <span class="required">*</span>
+                                                                                                            </label>
+                                                                                                            <span class="control-label col-md-9" style="text-align:left">
+                                                                                                                @workInfo.OwnerRequest
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="clearfix"></div>
+
+                                                                            </form>
+                                                                        </div>
+                                                                    
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+
+                                                    <div role="tabpanel" class="tab-pane fade" id="tab_content_person" aria-labelledby="profile-tab">
+                                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="x_panel">
+
+                                                                <div class="x_content">
+                                                                    <div class="table-responsive">
+                                                                        <table class="table table-striped jambo_table bulk_action">
+                                                                            <thead>
+                                                                                <tr class="headings">
+                                                                                    <th class="column-title">完成人 </th>
+                                                                                    <th class="column-title">是否为组长 </th>
+                                                                                    <th class="column-title">工作内容 </th>
+                                                                                </tr>
+                                                                            </thead>
+
+                                                                            <tbody>
+                                                                                @if (memberList != null && memberList.Count() > 0)
+                                                                                {
+                                                                                    foreach (JianTongBLL.WorkMemberClass memberClass in memberList)
+                                                                                    {
+                                                                                        JianTongBLL.JianTongUserClass userInfo = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.JianTongUserClass>(memberClass.userId);
+                                                                                        //JianTongBLL.JianTongUserClass CreateUser = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.JianTongUserClass>(workInfoClass.UserId);
+                                                                                        <tr class="even pointer">
+
+                                                                                            <td class=" ">@userInfo.TrueName </td>
+                                                                                            <td class=" ">@(memberClass.isTeamLead == 1 ? "是" : "否") </td>
+                                                                                            <td class=" ">@memberClass.workContent</td>
+
+                                                                                        </tr>
+                                                                                    }
+                                                                                }
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div role="tabpanel" class="tab-pane fade" id="tab_content_file" aria-labelledby="profile-tab">
+                                                        <div class="col-md-12 col-sm-12 col-xs-12">
+
+                                                            <div class="x_content">
+
+                                                                <div class="col-xs-9">
+                                                                    <!-- Tab panes -->
+                                                                    <div class="tab-content">
+
+                                                                        @if (fileTypeList != null && fileTypeList.Count() > 0)
+                                                                        {
+                                                                            int index = 1;
+                                                                            foreach (JianTongBLL.WorkFileType workFileType in fileTypeList)
+                                                                            {
+                                                                                string tabId = "tab_content_" + workFileType.Id;
+                                                                                string fileId = "file-" + workFileType.Id;
+                                                                                string tbodyId = "tbody-" + workFileType.Id;
+                                                                                string active = "";
+                                                                                if (index == 1)
+                                                                                {
+                                                                                    active = "active in";
+                                                                                }
+                                                                                <div class="tab-pane @active" id="@tabId">
+                                                                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                                                                        <div class="x_panel">
+                                                                                            <div class="x_content">
+                                                                                                <div class="table-responsive">
+                                                                                                    <table class="table table-striped jambo_table bulk_action">
+                                                                                                        <thead>
+                                                                                                            <tr class="headings">
+                                                                                                                <th class="column-title">文件名称 </th>
+                                                                                                                <th class="column-title">上传人员 </th>
+                                                                                                            </tr>
+                                                                                                        </thead>
+
+                                                                                                        <tbody id="@tbodyId">
+                                                                                                            @if (fileList != null && fileList.Count() > 0)
+                                                                                                            {
+                                                                                                                var workFileList = fileList.Where(w => w.fileTypeId == workFileType.Id && !w.IsDelete);
+                                                                                                                foreach (JianTongBLL.WorkFile fileClass in workFileList)
+                                                                                                                {
+                                                                                                                    JianTongBLL.JianTongUserClass userInfo = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.JianTongUserClass>(fileClass.fileUserId);
+                                                                                                                    <tr class="even pointer">
+                                                                                                                        <td class=" "><a target="_blank" href="../File/DownLoadFiles?id=@workInfo.Id&fileType=@fileClass.fileTypeId&fileName=@fileClass.fileName">@fileClass.fileName </a> </td>
+                                                                                                                        <td class=" ">@userInfo.Name</td>
+                                                                                                                    </tr>
+                                                                                                                }
+                                                                                                            }
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                index += 1;
+                                                                            }
+                                                                        }
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-xs-3">
+                                                                    <!-- required for floating -->
+                                                                    <!-- Nav tabs -->
+                                                                    <ul class="nav nav-tabs tabs-right">
+                                                                        @if (fileTypeList != null && fileTypeList.Count() > 0)
+                                                                        {
+                                                                            int index = 1;
+                                                                            foreach (JianTongBLL.WorkFileType workFileType in fileTypeList)
+                                                                            {
+                                                                                string tabId = "#tab_content_" + workFileType.Id;
+                                                                                string typeId = "#pro-tabb" + workFileType.Id;
+                                                                                string classValue = "";
+                                                                                if (index == 1)
+                                                                                {
+                                                                                    classValue = "active";
+                                                                                }
+                                                                                <li role="presentation" class="@classValue">
+                                                                                    <a href="@tabId" id="@typeId" data-toggle="tab">@workFileType.Name</a>
+                                                                                </li>
+                                                                                index += 1;
+                                                                            }
+                                                                        }
+
+                                                                    </ul>
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+
+                                    <div class="ln_solid"></div>
+                                    <form id="form1" method="post">
+                                        <div class="form-group">
+                                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                                <button class="btn btn-primary" onclick="pageSubmit(1)" type="button">确定</button>
+                                            </div>
+
+                                            <input type="hidden" id="passValue" name="passValue" />
+                                            <input type="hidden" id="invoiceType" name="invoiceType" />
+                                            <input type="hidden" id="workId" name="workId" value="@ViewBag.WorkId" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /page content -->
+            <!-- footer content -->
+            <footer>
+                <div class="pull-right">
+
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+            <!-- /footer content -->
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../vendors/moment/min/moment.min.js"></script>
+    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- bootstrap-wysiwyg -->
+    <script src="../vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+    <script src="../vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+    <script src="../vendors/google-code-prettify/src/prettify.js"></script>
+    <!-- jQuery Tags Input -->
+    <script src="../vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+    <!-- Switchery -->
+    <script src="../vendors/switchery/dist/switchery.min.js"></script>
+    <!-- Select2 -->
+    <script src="../vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Parsley -->
+    <script src="../vendors/parsleyjs/dist/parsley.min.js"></script>
+    <!-- Autosize -->
+    <script src="../vendors/autosize/dist/autosize.min.js"></script>
+    <!-- jQuery autocomplete -->
+    <script src="../vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+    <!-- starrr -->
+    <script src="../vendors/starrr/dist/starrr.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+    <script src="../Scripts/WdatePicker.js"></script>
+
+    <script type="text/javascript">
+        function pageSubmit(passValue) {
+            $('#invoiceType').val($('#invoiceTypeSelect').val());
+            $('#passValue').val(passValue);
+            $("#form1").submit();
+        }
+
+       function onshowFun() {
+            var Message = "@Html.Raw(ViewBag.Message)";
+            var MessageHref = "@Html.Raw(ViewBag.MessageHref)";
+            var Success = "@Html.Raw(ViewBag.Success)";
+            var SuccessHref = "@Html.Raw(ViewBag.SuccessHref)";
+            if (Message != null && Message != "") {
+                alert(Message);
+            }
+            if (MessageHref != null && MessageHref != "") {
+                alert(MessageHref);
+                window.location.href = "../WorkManager/FinanceWorkList";
+            }
+            if (Success != null && Success != "") {
+                alert(Success);
+            }
+            if (SuccessHref != null && SuccessHref != "") {
+                alert(SuccessHref);
+                window.location.href = "../WorkManager/FinanceWorkList";
+            }
+        }
+
+        function financeCheck(memberId,financeValId, financeDateId) {
+            $.ajax({
+                type: "POST",
+                url: "../Json/FinanceCheck",
+                data: { memberId: memberId, financeMoney: $(financeValId).val(), financeDate: $(financeDateId).val()},
+                dataType: "text",
+                success: function (data) {
+                    if (data == "1") {
+                        alert("提交成功");
+                    }
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
+

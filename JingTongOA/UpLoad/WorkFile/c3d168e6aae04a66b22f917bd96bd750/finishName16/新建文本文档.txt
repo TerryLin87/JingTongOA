@@ -1,0 +1,45 @@
+00001800-0000-1000-8000-00805f9b34fb
+00001801-0000-1000-8000-00805f9b34fb
+0000180a-0000-1000-8000-00805f9b34fb
+0000ffe0-0000-1000-8000-00805f9b34fb
+
+
+1£º
+00002a00-0000-1000-8000-00805f9b34fb
+00002a01-0000-1000-8000-00805f9b34fb
+00002a02-0000-1000-8000-00805f9b34fb
+00002a03-0000-1000-8000-00805f9b34fb
+00002a04-0000-1000-8000-00805f9b34fb
+2£º
+00002a05-0000-1000-8000-00805f9b34fb
+3£º
+00002a23-0000-1000-8000-00805f9b34fb
+ 00002a24-0000-1000-8000-00805f9b34fb
+ 00002a25-0000-1000-8000-00805f9b34fb
+ 00002a26-0000-1000-8000-00805f9b34fb
+ 00002a27-0000-1000-8000-00805f9b34fb
+ 00002a28-0000-1000-8000-00805f9b34fb
+ 00002a29-0000-1000-8000-00805f9b34fb
+ 00002a2a-0000-1000-8000-00805f9b34fb
+ 00002a50-0000-1000-8000-00805f9b34fb
+4£º
+0000ffe1-0000-1000-8000-00805f9b34fb//¶ÁÐ´UUID
+
+
+BufferedSource source = responseBody.source();
+            File outFile = new File(saveFilePath);
+            if (outFile.exists() && outFile.length() > 0) {
+                /*if(total == outFile.length()){
+                    source.close();
+                }else {*/
+                    BufferedSink sink = Okio.buffer(Okio.appendingSink(outFile));
+                    source.readAll(sink);
+                    sink.flush();
+                    source.close();
+                /*}*/
+            } else {
+                BufferedSink sink = Okio.buffer(Okio.sink(outFile));
+                source.readAll(sink);
+                sink.flush();
+                source.close();
+            }

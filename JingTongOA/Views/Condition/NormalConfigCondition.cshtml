@@ -1,0 +1,86 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+
+
+<html>
+<head>
+    <title>选择条件</title>
+    <meta http-equiv="Content-Language" content="zh-cn">
+
+    <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
+    <meta name="CODE_LANGUAGE" content="C#">
+    <meta name="vs_defaultClientScript" content="JavaScript">
+    <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <script src="../dialog/lhgdialog.min.js?skin=iblue"></script>
+    <base target=_self />
+    <script language="javascript">
+
+        var api = frameElement.api, W = api.opener;
+        
+        var tId = W.$.dialog.data('txtName');
+        function sendFromChild(checkValues, checkName) {
+            tId.value = checkName;
+            api.close();
+            /*window.returnValue = checkValues + "|" + checkName;
+            window.close();*/
+        }
+    </script>
+    <style type="text/css">
+
+        a {
+            width: 750px;
+            height: 65px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <form name="form1" method="post" id="form1">
+        @{
+            <table border="0" width="100%" cellspacing="0" cellpadding="0" height="100%" bordercolorlight="#c0c0c0" bordercolordark="#ffffff">
+
+                <tr>
+                    <td style="text-align: center">
+
+                        <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
+                            <tr>
+                                <td colspan="2" style="height: 31px; text-align: center;">
+                                    <div>
+                                        <table cellspacing="0" rules="all" border="1" id="GridView1" style="border-width:1px;border-style:solid;width:100%;border-collapse:collapse;">
+
+                                            @{
+                                                List<JianTongBLL.NormalConfig> user = ViewBag.List as List<JianTongBLL.NormalConfig>;
+                                                if (user != null)
+                                                {
+                                                    foreach (JianTongBLL.NormalConfig u in user)
+                                                    {
+                                                        <tr align="center">
+                                                            <td>
+                                                                <a onclick="sendFromChild('@u.Id','@u.Name')">@u.Name</a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        }
+    </form>
+</body>
+</html>

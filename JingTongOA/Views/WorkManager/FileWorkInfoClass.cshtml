@@ -1,0 +1,374 @@
+﻿
+@{
+    Layout = null;
+
+    List<JianTongBLL.WorkFile> fileList = ViewBag.FileList as List<JianTongBLL.WorkFile>;
+    List<JianTongBLL.WorkFileType> fileTypeList = ViewBag.FileType as List<JianTongBLL.WorkFileType>;
+
+    string workId = ViewBag.WorkId as string;
+    string javaValue = "";
+    string userName = ViewBag.UserName as string;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>Gentelella Alela! | </title>
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="../vendors/select2/dist/css/select2.min.css" rel="stylesheet">
+    <!-- Switchery -->
+    <link href="../vendors/switchery/dist/switchery.min.css" rel="stylesheet">
+    <!-- starrr -->
+    <link href="../vendors/starrr/dist/starrr.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+
+    <link href="../css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="../themes/explorer-fa/theme.css" media="all" rel="stylesheet" type="text/css" />
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+
+                    <div class="clearfix"></div>
+
+
+                    <!-- sidebar menu -->
+                    @Html.Action("SideMenu", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+                    <!-- /sidebar menu -->
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Lock">
+                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+
+            <!-- top navigation -->
+            @Html.Action("TopNavigation", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+            <!-- /top navigation -->
+            <!-- page content -->
+            <div class="right_col" role="main">
+                <div class="">
+                    <div class="page-title">
+                        <div class="title_left">
+                            <h3>上传资料</h3>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+
+                                <div class="x_content">
+                                    <br />
+
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="x_content">
+                                            <div class="form-group">
+
+                                                <label class="control-label col-md-2 col-sm-2 col-xs-12 right" for="first-name">
+                                                    工作编号
+                                                </label>
+                                                <div class="col-md-9 col-sm-9 col-xs-12 form-group">
+                                                    <input type="text" placeholder="" class="form-control" value="" id="workCode" name="workCode">
+                                                </div>
+
+                                                <div class="col-md-1 col-sm-1 col-xs-12 form-group">
+                                                    <button type="button" class="btn btn-success" onclick="changeWorkCode()">更改</button>
+                                                </div>
+                                            </div>
+                                            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                                                <ul id="myTab1" class="nav nav-tabs bar_tabs left" role="tablist">
+                                                    @if (fileTypeList != null && fileTypeList.Count() > 0)
+                                                    {
+                                                        int index = 1;
+                                                        foreach (JianTongBLL.WorkFileType workFileType in fileTypeList)
+                                                        {
+                                                            string tabId = "#tab_content" + workFileType.Id;
+                                                            string classValue = "";
+                                                            if (index == 1)
+                                                            {
+                                                                classValue = "active";
+                                                            }
+                                                            <li role="presentation" class="@classValue">
+                                                                <a href="@tabId" role="tab" id="profile-tabb4" data-toggle="tab" aria-controls="home" aria-expanded="false">@workFileType.Name</a>
+                                                            </li>
+                                                            index += 1;
+                                                        }
+                                                    }
+                                                </ul>
+                                                <div id="myTabContent2" class="tab-content">
+                                                    @if (fileTypeList != null && fileTypeList.Count() > 0)
+                                                    {
+                                                        int index = 1;
+                                                        foreach (JianTongBLL.WorkFileType workFileType in fileTypeList)
+                                                        {
+                                                            string tabId = "tab_content" + workFileType.Id;
+                                                            string fileId = "file-" + workFileType.Id;
+                                                            string tbodyId = "tbody-" + workFileType.Id;
+                                                            string active = "";
+                                                            if (index == 1)
+                                                            {
+                                                                active = "active in";
+                                                            }
+                                                            <div role="tabpanel" class="tab-pane fade @active" id="@tabId" aria-labelledby="home-tab">
+                                                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                                                    <div class="x_panel">
+                                                                        <div class="x_content">
+                                                                            <form enctype="multipart/form-data">
+                                                                                <div class="form-group">
+                                                                                    <div class="file-loading">
+                                                                                        <input id="@fileId" type="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="1" data-show-preview="false">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </form>
+                                                                            <div class="table-responsive">
+                                                                                <table class="table table-striped jambo_table bulk_action">
+                                                                                    <thead>
+                                                                                        <tr class="headings">
+                                                                                            <th class="column-title">文件名称 </th>
+                                                                                            <th class="column-title">上传人员 </th>
+                                                                                            <th class="column-title">操作 </th>
+                                                                                        </tr>
+                                                                                    </thead>
+
+                                                                                    <tbody id="@tbodyId">
+                                                                                        @if (fileList != null && fileList.Count() > 0)
+                                                                                        {
+                                                                                            var workFileList = fileList.Where(w => w.fileTypeId == workFileType.Id && !w.IsDelete);
+                                                                                            foreach (JianTongBLL.WorkFile fileClass in workFileList)
+                                                                                            {
+                                                                                                JianTongBLL.JianTongUserClass userInfo = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.JianTongUserClass>(fileClass.fileUserId);
+                                                                                                <tr class="even pointer">
+                                                                                                    <td class=" ">@fileClass.fileName </td>
+                                                                                                    <td class=" ">@userInfo.Name</td>
+                                                                                                    <td class=" ">
+                                                                                                        <a href="#" onclick="deleteFile(this,'@fileClass.Id')" style="text-decoration: underline; text-align: center">删除</a>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            }
+                                                                                        }
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            index += 1;
+                                                        }
+                                                    }
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /page content -->
+            <!-- footer content -->
+            <footer>
+                <div class="pull-right">
+
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+            <!-- /footer content -->
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../vendors/moment/min/moment.min.js"></script>
+    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- bootstrap-wysiwyg -->
+    <script src="../vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+    <script src="../vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+    <script src="../vendors/google-code-prettify/src/prettify.js"></script>
+    <!-- jQuery Tags Input -->
+    <script src="../vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+    <!-- Switchery -->
+    <script src="../vendors/switchery/dist/switchery.min.js"></script>
+    <!-- Select2 -->
+    <script src="../vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Parsley -->
+    <script src="../vendors/parsleyjs/dist/parsley.min.js"></script>
+    <!-- Autosize -->
+    <script src="../vendors/autosize/dist/autosize.min.js"></script>
+    <!-- jQuery autocomplete -->
+    <script src="../vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+    <!-- starrr -->
+    <script src="../vendors/starrr/dist/starrr.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+
+
+    <script src="../js/plugins/sortable.js" type="text/javascript"></script>
+    <script src="../js/fileinput.js" type="text/javascript"></script>
+    <script src="../js/locales/zh.js" type="text/javascript"></script>
+    <script src="../themes/explorer-fa/theme.js" type="text/javascript"></script>
+    <script src="../themes/fa/theme.js" type="text/javascript"></script>
+    <script src="../js/popper.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        function pageSubmit() {
+            $("#form1").submit();
+        }
+
+        function deleteFile(fileTr,workFileId) {
+            $.ajax({
+                type: "POST",
+                url: "../File/DeleteFile",
+                data: { workFileId: workFileId },
+                dataType: "json",
+                success: function (data) {
+                    $(fileTr).parent().parent().remove();
+                }
+            });
+        }
+
+        function changeWorkCode() {
+            $.ajax({
+                type: "POST",
+                url: "../Json/ChangeWorkCode",
+                data: { workId: '@workId', workCode: $("#workCode").val() },
+                dataType: "text",
+                success: function (data) {
+                    if (data == "success") {
+                        alert("工作编号修改成功");
+                    }
+                }
+            });
+        }
+
+        //$("#file-1").fileinput({
+        //    theme: 'fa',
+        //    uploadUrl: '/File/FileUpLoad?userId=1&amp;workId=2', // you must set a valid URL here else you will get an error
+        //    fileType: "any",
+        //    overwriteInitial: false,
+        //    maxFilesNum: 10,
+        //    //allowedFileTypes: ['image', 'video', 'flash'],
+        //    slugCallback: function (filename) {
+        //        return filename.replace('(', '_').replace(']', '_');
+        //    }
+        //}).on("fileuploaded", function (event, data, previewId, index) {
+        //        var fname = data.files[index].name
+        //        $("#adfasdf").append('<tr class=\'even pointer\'><td>' + fname + ' </td><td>' + fname + '</td><td><a onclick=\'deleteFile(this,\'aaaaaaa\')\' style=\'text-decoration: underline; text-align: center\'>删除</a></td></tr>');
+        //    });
+
+        @if (fileTypeList != null && fileTypeList.Count() > 0)
+        {
+            foreach (JianTongBLL.WorkFileType workFileType in fileTypeList)
+            {
+                string tabId = "#tab_content" + workFileType.Id;
+                string fileId = "#file-" + workFileType.Id;
+                string tbodyId = "#tbody-" + workFileType.Id;
+
+                javaValue += "$('"+ fileId + @"').fileinput({
+            language: 'zh',
+            showUpload: true,
+            dropZoneEnabled: false,
+                    theme: 'fa',
+            uploadUrl: '../File/FileUpLoad?fileType=" + workFileType.Id + "&workId="+workId+ @"',
+            fileType: 'any',
+            overwriteInitial: false,
+            maxFilesNum: 10
+            //allowedFileTypes: ['image', 'video', 'flash'],
+
+                    }).on('fileuploaded', function(event, data, previewId, index) {
+                var fname = data.files[index].name;
+                var result = data.response;
+                $('"+ tbodyId + @"').append('<tr class=\'even pointer\'><td>' + fname + ' </td><td>" + userName+ @"</td><td><a onclick=\'deleteFile(this,&quot;'+result.fileId+'&quot;)\' style=\'text-decoration: underline; text-align: center\'>删除</a></td></tr>');
+            });
+            ";
+            }
+        }
+
+                @Html.Raw(javaValue)
+        //slugCallback: function(filename) {
+        //    return filename.replace('(', '_').replace(']', '_');
+        //}
+        @*@if (fileTypeList != null && fileTypeList.Count() > 0)
+        {
+            foreach (JianTongBLL.WorkFileType workFileType in fileTypeList)
+            {
+                string tabId = "#tab_content" + workFileType.Id;
+                string fileId = "#file-" + workFileType.Id;
+                string tbodyId = "#tbody-" + workFileType.Id;
+
+                string javaValue = @"$('"+ fileId + "').fileinput({theme: 'fa',uploadUrl: '@Url.Action('FileUpLoad','File', new {";
+                string javaValue1 = "userId = \'" + userId + "\',workId=\'"+workId+ "\',fileType=\'"+workFileType.Id+"\'";
+                string javaValue2 =@"})',
+                fileType: 'any',
+                overwriteInitial: false,
+                maxFilesNum: 10,
+                slugCallback: function(filename) {
+                        return filename.replace('(', '_').replace(']', '_');
+                    }
+                        }).on('fileuploaded', function(event, data, previewId, index) {
+                    var fname = data.files[index].name;
+                    alert(fname);
+                });
+";
+                @Html.Raw(javaValue + javaValue1 + javaValue2);
+            }
+        }*@
+
+    </script>
+</body>
+</html>
+

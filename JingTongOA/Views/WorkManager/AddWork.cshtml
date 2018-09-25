@@ -1,0 +1,1039 @@
+﻿
+@{
+    Layout = null;
+    int Count = 1;
+    List<JianTongBLL.Company> companyList = JianTongFun.EntityFun.CreateInstance.GetCompany(null, -1, -1, out Count);
+    List<JianTongBLL.InvestmentType> investList = JianTongFun.EntityFun.CreateInstance.GetListTByIntId<JianTongBLL.InvestmentType>(null, -1, -1, out Count);
+    List<JianTongBLL.ProductType> productTypeList = JianTongFun.EntityFun.CreateInstance.GetListTByIntId<JianTongBLL.ProductType>(null, -1, -1, out Count);
+    List<JianTongBLL.ConsultationType> cTypeList = JianTongFun.EntityFun.CreateInstance.GetListTByIntId<JianTongBLL.ConsultationType>(null, -1, -1, out Count);
+    List<JianTongBLL.ProductSource> productSourceList = JianTongFun.EntityFun.CreateInstance.GetListTByIntId<JianTongBLL.ProductSource>(null, -1, -1, out Count);
+    List<JianTongBLL.ValuationType> vList = JianTongFun.EntityFun.CreateInstance.GetListTByIntId<JianTongBLL.ValuationType>(null, -1, -1, out Count);
+    List<JianTongBLL.DevelopUnit> delelopList = JianTongFun.EntityFun.CreateInstance.GetListTByIntId<JianTongBLL.DevelopUnit>(null, -1, -1, out Count);
+    List<JianTongBLL.ConstructionUnit> constructionList = JianTongFun.EntityFun.CreateInstance.GetListTByIntId<JianTongBLL.ConstructionUnit>(null, -1, -1, out Count);
+    //int workCode = ViewBag.WorkCode;
+    //string wCode = workCode.ToString();
+    //int length = 4 - wCode.Length;
+    //if (length > 0)
+    //{
+    //    for (int i = 0; i < length; i++)
+    //    {
+    //        wCode = "0" + wCode;
+    //    }
+    //}
+    string year = DateTime.Now.Year.ToString();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>Gentelella Alela! | </title>
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link href="../vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="../vendors/select2/dist/css/select2.min.css" rel="stylesheet">
+    <!-- Switchery -->
+    <link href="../vendors/switchery/dist/switchery.min.css" rel="stylesheet">
+    <!-- starrr -->
+    <link href="../vendors/starrr/dist/starrr.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md" onload="onshowFun()">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+
+                    <div class="clearfix"></div>
+
+
+                    <!-- sidebar menu -->
+                    @Html.Action("SideMenu", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+                    <!-- /sidebar menu -->
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Lock">
+                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+
+            <!-- top navigation -->
+            @Html.Action("TopNavigation", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+            <!-- /top navigation -->
+            <!-- page content -->
+            <div class="right_col" role="main">
+                <div class="">
+                    <div class="page-title">
+                        <div class="title_left">
+                            <h3>项目登记</h3>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+
+                                <div class="x_content">
+                                    <br />
+                                    <form id="form1" data-parsley-validate class="form-horizontal form-label-left" method="post">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                主编审人 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" name="mainEditorName" id="mainEditorName" onclick="chooseMainEditUser(this)" readonly="readonly" class="form-control">
+                                                <input type="hidden" placeholder="" name="mainEditorId" id="mainEditorId" readonly="readonly" class="form-control">
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                项目负责人 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" name="chargeManName" id="chargeManName" onclick="chooseMainEditUser(this)" readonly="readonly" class="form-control">
+                                                <input type="hidden" placeholder="" name="chargeManId" id="chargeManId" readonly="readonly" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="last-name">
+                                                项目合同 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input type="text" placeholder="" name="contractName" id="contractName" class="form-control">
+                                                <input type="hidden" placeholder="" name="contractId" id="contractId" readonly="readonly" class="form-control">
+                                            </div>
+                                            @*<label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                工作编号
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" class="form-control" value="" id="workCode" name="workCode">
+                                            </div>*@
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="last-name">
+                                                项目名称 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input type="text" id="workName" name="workName" class="form-control col-md-7 col-xs-12">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                所属公司 <span class="required">*</span>
+                                            </label>
+
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <select class="form-control" id="companyId" name="companyId" @*onchange="onChange()"*@>
+                                                    <option value="-1">选择公司</option>
+                                                    @if (companyList != null && companyList.Count() > 0)
+                                                    {
+                                                        foreach (JianTongBLL.Company company in companyList)
+                                                        {
+
+                                                            <option value="@company.Id">@company.Name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                签订日期
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" class="form-control" name="SignDate" id="SignDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm' })">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                建设单位 <span class="required">*</span>
+                                            </label>
+
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input type="text" placeholder="" class="form-control" name="ConstructionUnitName" id="ConstructionUnitName">
+                                                <input type="hidden" placeholder="" class="form-control" name="ConstructionUnitId" id="ConstructionUnitId">
+                                                <input type="text" placeholder="" class="form-control" name="ConstructionUnitTel" id="ConstructionUnitTel">
+                                                <a href="#" onclick="chooseUnit($('#ConstructionUnitName'), $('#ConstructionUnitTel'),'url:../Condition/GetConstructionUnitCondition','选择建设单位')" style="color:orangered">模板</a>
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                施工单位
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" class="form-control" name="DevelopUnitName" id="DevelopUnitName">
+                                                <input type="hidden" placeholder="" class="form-control" name="DevelopUnitId" id="DevelopUnitId">
+                                                <input type="text" placeholder="" class="form-control" name="DevelopUnitTel" id="DevelopUnitTel">
+                                                <a href="#" onclick="chooseUnit($('#DevelopUnitName'), $('#DevelopUnitTel'),'url:../Condition/DevelopUnitCondition','选择施工单位')" style="color:orangered">模板</a>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                设计单位 <span class="required">*</span>
+                                            </label>
+
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input type="text" placeholder="" class="form-control" name="DesignUnitName" id="DesignUnitName">
+                                                <input type="hidden" placeholder="" class="form-control" name="DesignUnitId" id="DesignUnitId">
+                                                <input type="text" placeholder="" class="form-control" name="DesignUnitTel" id="DesignUnitTel">
+                                                <a href="#" onclick="chooseUnit($('#DesignUnitName'), $('#DesignUnitTel'),'url:../Condition/GetDesignUnitCondition','选择设计单位')" style="color:orangered">模板</a>
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                监理单位
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" class="form-control" name="SupervisorUnitName" id="SupervisorUnitName">
+                                                <input type="hidden" placeholder="" class="form-control" name="SupervisorUnitId" id="SupervisorUnitId">
+                                                <input type="text" placeholder="" class="form-control" name="SupervisorUnitTel" id="SupervisorUnitTel">
+                                                <a href="#" onclick="chooseUnit($('#SupervisorUnitName'), $('#SupervisorUnitTel'),'url:../Condition/GetSupervisorUnitCondition','选择监理单位')" style="color:orangered">模板</a>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" id="plArea">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                省、市 <span class="required">*</span>
+                                            </label>
+
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <select class="form-control col-md-3 col-sm-3 col-xs-12" id="province" name="province">
+                                                    @*<option id="-1">选择省市</option>
+                                                        <option>浙江</option>
+                                                        <option>上海</option>
+                                                        <option>江苏</option>*@
+                                                </select>
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                所在地 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <select class="form-control col-md-3 col-sm-3 col-xs-12" id="city" name="city">
+                                                    @*<option>选择所在地</option>
+                                                        <option>台州</option>
+                                                        <option>杭州</option>
+                                                        <option>宁波</option>*@
+                                                </select>
+                                            </div>
+                                            <input type="hidden" id="province1" name="province1" />
+                                            <input type="hidden" id="location" name="location" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="last-name">
+                                                建设规模 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input type="text" id="scaleOfConstruction" name="scaleOfConstruction" class="form-control col-md-7 col-xs-12">
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="last-name">
+                                                承办部门 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="安装" onchange="underTakeCheck(this)"> 安装
+                                                    </label>
+                                                    <label>
+                                                        <input type="checkbox" value="土建" onchange="underTakeCheck(this)"> 土建
+                                                    </label>
+                                                    <label>
+                                                        <input type="checkbox" value="水利" onchange="underTakeCheck(this)"> 水利
+                                                    </label>
+                                                    <label>
+                                                        <input type="checkbox" value="市政" onchange="underTakeCheck(this)"> 市政
+                                                    </label>
+                                                    <label>
+                                                        <input type="checkbox" value="其他" onchange="underTakeCheck(this)"> 其他
+                                                    </label>
+                                                    <input type="hidden" id="underTakeInfo" name="underTakeInfo" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                投资类型 <span class="required">*</span>
+                                            </label>
+
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <select class="form-control" id="investmentType" name="investmentType">
+                                                    <option value="-1">选择类型</option>
+                                                    @if (investList != null && investList.Count > 0)
+                                                    {
+                                                        foreach (JianTongBLL.InvestmentType investmentType in investList)
+                                                        {
+                                                            <option value="@investmentType.Id">@investmentType.Name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                项目类型 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <select class="form-control" id="productType" name="productType">
+                                                    <option value="-1">选择类型</option>
+                                                    @if (productTypeList != null && productTypeList.Count > 0)
+                                                    {
+                                                        foreach (JianTongBLL.ProductType investmentType in productTypeList)
+                                                        {
+                                                            <option value="@investmentType.Id">@investmentType.Name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                咨询类型 <span class="required">*</span>
+                                            </label>
+
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <select class="form-control" id="consultationType" name="consltationType">
+                                                    <option value="-1">选择类型</option>
+                                                    @if (cTypeList != null && cTypeList.Count > 0)
+                                                    {
+                                                        foreach (JianTongBLL.ConsultationType investmentType in cTypeList)
+                                                        {
+                                                            <option value="@investmentType.Id">@investmentType.Name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                紧急度 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <select class="form-control" id="emergencyDegree" name="emergencyDegree">
+                                                    <option value="-1">选择紧急度</option>
+                                                    <option value="1">一般</option>
+                                                    <option value="2">紧急</option>
+                                                    <option value="3">非常紧急</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                项目来源
+                                            </label>
+
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <select class="form-control" id="productSource" name="productSource">
+                                                    <option value="-1">选择来源</option>
+                                                    @if (productSourceList != null && productSourceList.Count > 0)
+                                                    {
+                                                        foreach (JianTongBLL.ProductSource investmentType in productSourceList)
+                                                        {
+                                                            <option value="@investmentType.Id">@investmentType.Name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                计价方式
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <select class="form-control" id="valuationType" name="valuationType">
+                                                    <option value="-1">选择方式</option>
+                                                    @if (vList != null && vList.Count > 0)
+                                                    {
+                                                        foreach (JianTongBLL.ValuationType investmentType in vList)
+                                                        {
+                                                            <option value="@investmentType.Id">@investmentType.Name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                合同金额(万元)
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" class="form-control" id="investMoney" name="investMoney">
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                送审/预算金额(万元)
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" class="form-control" id="jiananMoney" name="jiananMoney">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                开始时间 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" readonly="readonly" placeholder="" class="form-control" id="StartTime" name="StartTime" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm' })">
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                计划完成时间 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" readonly="readonly" placeholder="" class="form-control" id="EndTime" name="EndTime" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm' })">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12">咨询费用</label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea class="resizable_textarea form-control" id="consultationMoney" name="consultationMoney" style="min-height:100px"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12"></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <a onclick="normalConfigCheck($('#consultationMoney'),1)" style="color:orangered">咨询费用模板</a>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="hidden" id="majorProject" name="majorProject" />
+                                            <label class="col-md-2 col-sm-2 col-xs-12 control-label">
+                                                专业工程
+                                            </label>
+
+                                            <div class="col-md-2 col-sm-2 col-xs-12">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="建筑" onchange="marjorInfoCheck(this)"> 建筑
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="安装" onchange="marjorInfoCheck(this)"> 安装
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="装饰" onchange="marjorInfoCheck(this)"> 装饰
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="仿古建筑" onchange="marjorInfoCheck(this)"> 仿古建筑
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-2 col-xs-12">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="市政" onchange="marjorInfoCheck(this)"> 市政
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="轨道交通" onchange="marjorInfoCheck(this)"> 轨道交通
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="公路" onchange="marjorInfoCheck(this)"> 公路
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="铁路" onchange="marjorInfoCheck(this)"> 铁路
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-2 col-xs-12">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="水运" onchange="marjorInfoCheck(this)"> 水运
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="电力" onchange="marjorInfoCheck(this)"> 电力
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="人防" onchange="marjorInfoCheck(this)"> 人防
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="化工" onchange="marjorInfoCheck(this)"> 化工
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-2 col-xs-12">
+
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="园林绿化" onchange="marjorInfoCheck(this)"> 园林绿化
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="通信" onchange="marjorInfoCheck(this)"> 通信
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="水利" onchange="marjorInfoCheck(this)"> 水利
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="石油" onchange="marjorInfoCheck(this)"> 石油
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                专业复核人 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" name="professionalPersonName" id="professionalPersonName" onclick="chooseMainEditUser(this)" readonly="readonly" class="form-control">
+                                                <input type="hidden" placeholder="" name="professionalPerson" id="professionalPerson" readonly="readonly" class="form-control">
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                项目复核人 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" name="projectPersonName" id="projectPersonName" onclick="chooseMainEditUser(this)" readonly="readonly" class="form-control">
+                                                <input type="hidden" placeholder="" name="projectPerson" id="projectPerson" readonly="readonly" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+                                                归档确认人员 <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                                                <input type="text" placeholder="" name="fileUserName" id="fileUserName" onclick="chooseMainEditUser(this)" readonly="readonly" class="form-control">
+                                                <input type="hidden" placeholder="" name="fileUserId" id="fileUserId" readonly="readonly" class="form-control">
+                                            </div>
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">
+
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="workFileListJson" name="workFileListJson" />
+
+                                        <div class="col-md-10 col-sm-10 col-xs-12">
+                                            <div class="x_content">
+                                                <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                                                    <ul id="myTab1" class="nav nav-tabs bar_tabs right" role="tablist">
+                                                        <li role="presentation" class="">
+                                                            <a href="#tab_content11" id="home-tabb" role="tab" data-toggle="tab" aria-controls="profile" aria-expanded="true">资料清单</a>
+                                                        </li>
+                                                        <li role="presentation" class="">
+                                                            <a href="#tab_content22" role="tab" id="profile-tabb" data-toggle="tab" aria-controls="profile" aria-expanded="false">实施方案</a>
+                                                        </li>
+                                                        <li role="presentation" class="">
+                                                            <a href="#tab_content33" role="tab" id="profile-tabb3" data-toggle="tab" aria-controls="profile" aria-expanded="false">交办事宜</a>
+                                                        </li>
+                                                        <li role="presentation" class="active">
+                                                            <a href="#tab_content44" role="tab" id="profile-tabb4" data-toggle="tab" aria-controls="home" aria-expanded="false">基本概况</a>
+                                                        </li>
+                                                    </ul>
+                                                    <div id="myTabContent2" class="tab-content">
+                                                        <input type="hidden" id="fileListId" name="fileListId" />
+                                                        <div role="tabpanel" class="tab-pane fade " id="tab_content11" aria-labelledby="profile-tab">
+                                                            <p>
+                                                                <div class="form-group">
+                                                                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                                                        <button class="btn btn-primary" type="button" onclick="chooseWorkFileInfoList()">添加</button>
+                                                                        <input type="hidden" name="WorkFileInfoListName" id="WorkFileInfoListName" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="x_panel">
+
+                                                                    <div class="x_content">
+                                                                        <div class="table-responsive">
+                                                                            <table class="table table-striped jambo_table bulk_action">
+                                                                                <thead>
+                                                                                    <tr class="headings">
+                                                                                        <th class="column-title">序号 </th>
+                                                                                        <th class="column-title">资料清单 </th>
+                                                                                        <th>是否为原件 </th>
+                                                                                        <th>操作</th>
+                                                                                    </tr>
+                                                                                </thead>
+
+                                                                                <tbody id="workFileInfoList"></tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </p>
+                                                        </div>
+                                                        <div role="tabpanel" class="tab-pane fade" id="tab_content22" aria-labelledby="profile-tab">
+                                                            <p>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                        实施方案编制依据
+                                                                    </label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <textarea class="resizable_textarea form-control" id="programme1" name="programme1" style="min-height:150px"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <a onclick="normalConfigCheck($('#programme1'),7)" style="color:orangered">实施方案编制依据模板</a>
+                                                                    </div>
+                                                                </div>
+                                                            </p>
+                                                            <p>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                        咨询依据、原则、标准、方式（咨询要求）
+                                                                    </label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <textarea class="resizable_textarea form-control" id="programme2" name="programme2" style="min-height:150px"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <a onclick="normalConfigCheck($('#programme2'),8)" style="color:orangered">咨询依据、原则、标准、方式（咨询要求）模板</a>
+                                                                    </div>
+                                                                </div>
+                                                            </p>
+                                                            <p>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                        项目实施计划安排
+                                                                    </label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <textarea class="resizable_textarea form-control" id="programme3" name="programme3" style="min-height:150px"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <a onclick="normalConfigCheck($('#programme3'),9)" style="color:orangered">项目实施计划安排模板</a>
+                                                                    </div>
+                                                                </div>
+                                                            </p>
+                                                            <p>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                        咨询质量目标
+                                                                    </label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <textarea class="resizable_textarea form-control" id="programme4" name="programme4" style="min-height:150px"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <a onclick="normalConfigCheck($('#programme4'),10)" style="color:orangered">咨询质量目标模板</a>
+                                                                    </div>
+                                                                </div>
+                                                            </p>
+                                                            <p>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                        咨询操作过程中重点、难点的具体实施措施
+                                                                    </label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <textarea class="resizable_textarea form-control" id="programme5" name="programme5" style="min-height:150px"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <a onclick="normalConfigCheck($('#programme5'),11)" style="color:orangered">咨询操作过程中重点、难点的具体实施措施模板</a>
+                                                                    </div>
+                                                                </div>
+                                                            </p>
+                                                        </div>
+                                                        <div role="tabpanel" class="tab-pane fade" id="tab_content33" aria-labelledby="profile-tab">
+                                                            @*<p>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                        咨询范围、咨询目标
+                                                                    </label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <textarea class="resizable_textarea form-control" id="matter1" name="matter1" style="min-height:150px"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <a onclick="normalConfigCheck($('#matter1'),4)" style="color:orangered">咨询范围、咨询目标模板</a>
+                                                                    </div>
+                                                                </div>
+                                                            </p>*@
+                                                            <p>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                        委托单位交代事项（咨询要求）
+                                                                    </label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <textarea class="resizable_textarea form-control" id="matter2" name="matter2" style="min-height:100px"></textarea>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <a onclick="normalConfigCheck($('#matter2'),5)" style="color:orangered">委托单位交代事项（咨询要求）模板</a>
+                                                                    </div>
+                                                                </div>
+                                                            </p>
+                                                            <p>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                        咨询操作中需要注意的重点、难点
+                                                                    </label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <textarea class="resizable_textarea form-control" id="matter3" name="matter3" style="min-height:150px"></textarea>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <a onclick="normalConfigCheck($('#matter3'),6)" style="color:orangered">咨询操作中需要注意的重点、难点模板</a>
+                                                                    </div>
+                                                                </div>
+                                                            </p>
+                                                        </div>
+                                                        <div role="tabpanel" class="tab-pane fade active in" id="tab_content44" aria-labelledby="home-tab">
+                                                            <p>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                        项目概况 <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <textarea class="resizable_textarea form-control" id="projectOverview" name="projectOverview" style="min-height:150px"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <a onclick="normalConfigCheck($('#projectOverview'),2)" style="color:orangered">项目概况模板</a>
+                                                                    </div>
+                                                                </div>
+                                                            </p>
+                                                            <p>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                                                                        业主要求 <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <textarea class="resizable_textarea form-control" id="OwnerRequest" name="OwnerRequest" style="min-height:150px"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                        <a onclick="normalConfigCheck($('#OwnerRequest'),3)" style="color:orangered">业主要求模板</a>
+                                                                    </div>
+                                                                </div>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+
+
+                                        <div class="ln_solid"></div>
+                                        <div class="form-group">
+                                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                                <button class="btn btn-primary" type="button">取消</button>
+                                                <button type="button" class="btn btn-success" onclick="PageSubmit()">提交</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /page content -->
+            <!-- footer content -->
+            <footer>
+                <div class="pull-right">
+
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+            <!-- /footer content -->
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../vendors/moment/min/moment.min.js"></script>
+    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- bootstrap-wysiwyg -->
+    <script src="../vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+    <script src="../vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+    <script src="../vendors/google-code-prettify/src/prettify.js"></script>
+    <!-- jQuery Tags Input -->
+    <script src="../vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+    <!-- Switchery -->
+    <script src="../vendors/switchery/dist/switchery.min.js"></script>
+    <!-- Select2 -->
+    <script src="../vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Parsley -->
+    <script src="../vendors/parsleyjs/dist/parsley.min.js"></script>
+    <!-- Autosize -->
+    <script src="../vendors/autosize/dist/autosize.min.js"></script>
+    <!-- jQuery autocomplete -->
+    <script src="../vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+    <!-- starrr -->
+    <script src="../vendors/starrr/dist/starrr.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+
+    <script src="../js/jquery.citys.js"></script>
+
+    <script src="../dialog/lhgdialog.min.js?skin=iblue"></script>
+    <script src="../Scripts/WdatePicker.js"></script>
+
+    <script type="text/javascript">
+        function onshowFun() {
+            var Message = "@Html.Raw(ViewBag.Message)";
+            var MessageHref = "@Html.Raw(ViewBag.MessageHref)";
+            var Success = "@Html.Raw(ViewBag.Success)";
+            var SuccessHref = "@Html.Raw(ViewBag.SuccessHref)";
+            if (Message != null && Message != "") {
+                alert(Message);
+            }
+            if (MessageHref != null && MessageHref != "") {
+                alert(MessageHref);
+                window.location.href = "../WorkManager/MyWorkList";
+            }
+            if (Success != null && Success != "") {
+                alert(Success);
+            }
+            if (SuccessHref != null && SuccessHref != "") {
+                alert(SuccessHref);
+                window.location.href = "../WorkManager/MyWorkList";
+            }
+        }
+
+        function chooseMainEditUser(textName) {
+            $.dialog.data('txtName', $(textName)[0]);
+            $.dialog.data('txtId', $(textName).next()[0]);
+            $.dialog.data('hasTxtName', $(textName).val());
+            $.dialog.data('hasTxtId', $(textName).next().val());
+            $.dialog({
+                content: 'url:../Condition/UserCondition',
+                title: '选择人员',
+                lock:false,
+                width: '400px',
+                max: false,
+                min: false
+            });
+        }
+
+        function chooseUnit(textName,textTel,url,title) {
+            $.dialog.data('txtName', $(textName)[0]);
+            $.dialog.data('txtId', $(textName).next()[0]);
+            $.dialog.data('txtTel', $(textTel)[0]);
+            $.dialog.data('hasTxtName', $(textName).val());
+            $.dialog.data('hasTxtId', $(textName).next().val());
+            $.dialog({
+                content: url,
+                title: title,
+                lock: false,
+                width: '400px',
+                max: false,
+                min: false
+            });
+        }
+
+        //function chooseDevelopUnit(textName,textTel) {
+        //    $.dialog.data('txtName', $(textName)[0]);
+        //    $.dialog.data('txtId', $(textName).next()[0]);
+        //    $.dialog.data('txtTel', $(textTel)[0]);
+        //    $.dialog.data('hasTxtName', $(textName).val());
+        //    $.dialog.data('hasTxtId', $(textName).next().val());
+        //    $.dialog({
+        //        content: 'url:../Condition/DevelopUnitCondition',
+        //        title: '选择施工单位',
+        //        lock: false,
+        //        width: '400px',
+        //        max: false,
+        //        min: false
+        //    });
+        //}
+
+        function chooseWorkFileInfoList() {
+            $.dialog.data('txtName', $("#WorkFileInfoListName")[0]);
+            $.dialog.data('hasTxtName', $("#WorkFileInfoListName").val());
+            $.dialog({
+                content: 'url:../Condition/FileListCondition',
+                title: '选择资料清单',
+                lock: false,
+                width: '400px',
+                max: false,
+                min: false,
+                close: function () {
+                    var fileListName = $("#WorkFileInfoListName").val();
+                    var htmlContent = "";
+                    if (fileListName == null || fileListName == undefined || fileListName == "") {
+                        return;
+                    }
+                    var fileListArray = fileListName.split("|");
+                    $(fileListArray).each(function (i,n) {
+                        if (n == null || n == undefined || n == "") {
+                            return true;
+                        }
+                        var valueArray = n.split(",");
+                        htmlContent += '<tr class="even pointer" name="fileList">' +
+                            '<td> <input type="text" readonly="readonly" value="' + valueArray[0]+'" name="fileListId" /></td >'+
+                            '<td name="fileListName"> ' + valueArray[1]+'</td >'+
+                                '<td><input type="text"  name="fileListContent" /></td>'+
+                                '<td><a href="#" onclick="deleteWorkFile(this)" >删除</a></td>'+
+                                                                                    '</tr >';
+                    });
+                    $("#workFileInfoList").append(htmlContent);
+
+
+                }
+            });
+        }
+
+        function deleteWorkFile(fileTr) {
+            $(fileTr).parent().parent().remove();
+        }
+
+        function PageSubmit() {
+            var selectedId = $("#companyId option:selected").val();
+            if (selectedId == null || selectedId == undefined || selectedId == "" || selectedId=="-1") {
+                alert("请选择公司")
+                return false;
+            }
+
+            var proPerson = $("#professionalPerson").val();
+            if (proPerson == null || proPerson == undefined || proPerson == "") {
+                alert("请选择专业复核人")
+                return false;
+            }
+
+            var projectPerson = $("#projectPerson").val();
+            if (projectPerson == null || projectPerson == undefined || projectPerson == "") {
+                alert("请选择项目复核人")
+                return false;
+            }
+
+            var fileUser = $("#fileUserId").val();
+            if (fileUser == null || fileUser == undefined || fileUser == "") {
+                alert("请选择归档确认人")
+                return false;
+            }
+            var json = '[';
+            $("#workFileInfoList tr[name='fileList']").each(function (i) {
+                var fileListId = $(this).find('input[name="fileListId"]').val();
+                var fileListContent = $(this).find('input[name="fileListContent"]').val();
+                var fileListName = $(this).find('td[name="fileListName"]').html();
+                json += '{';
+                json += '"workFileListId":"' + fileListId + '",';
+                json += '"Name":"' + fileListName + '",';
+                json += '"Content":"' + fileListContent + '",';
+                json += '},';
+            });
+            json += ']';
+
+            $("#workFileListJson").val(json);
+            $("#form1").submit();
+        }
+
+        $('#plArea').citys({
+            province: '浙江省',
+            city: '台州',
+            onChange: function (info) {
+                $("#province1").val(info['province']);
+                $("#location").val(info['city'])
+            }
+        }, function (api) {
+            $("#province1").val(api['province']);
+            $("#location").val(api['city'])
+        });
+
+        function marjorInfoCheck(marjorValue) {
+            var marjorInfo = $('#majorProject').val();
+            if ($(marjorValue).is(':checked')) {
+                marjorInfo += $(marjorValue).val() + ',';
+            } else {
+                marjorInfo = marjorInfo.replace($(marjorValue).val() + ',', "");
+            }
+            $('#majorProject').val(marjorInfo);
+        }
+
+        function underTakeCheck(underTakeValue) {
+            var underTakeInfo = $('#underTakeInfo').val();
+            if ($(underTakeInfo).is(':checked')) {
+                marjorInfo += $(marjorValue).val() + ',';
+            } else {
+                marjorInfo = marjorInfo.replace($(marjorValue).val() + ',', "");
+            }
+            $('#underTakeInfo').val(underTakeInfo);
+        }
+
+        function normalConfigCheck(textName,nType) {
+            $.dialog.data('txtName', $(textName)[0]);
+            $.dialog.data('hasTxtName', $(textName).val());
+            $.dialog({
+                content: 'url:../Condition/NormalConfigCondition?type=' + nType,
+                title: '选择配置信息',
+                lock: false,
+                width: '800px',
+                height:'800px',
+                max: false,
+                min: false
+            });
+        }
+
+        @*function onChange() {
+            var yearValue = '@year';
+            var selectedId = $("#companyId option:selected").val();
+            var workCode = '@wCode';
+            $("#workCode").val(yearValue + selectedId + workCode);
+        }*@
+    </script>
+</body>
+</html>
+

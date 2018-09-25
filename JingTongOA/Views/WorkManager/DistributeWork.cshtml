@@ -1,0 +1,247 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md"  onload="show()">
+    <form id="form1" name="form1" method="post">
+        <div class="container body">
+            <div class="main_container">
+                <div class="col-md-3 left_col">
+                    <div class="left_col scroll-view">
+                        <div class="navbar nav_title" style="border: 0;">
+                            <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+
+                        <!-- sidebar menu -->
+                        @Html.Action("SideMenu", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+                        <!-- /sidebar menu -->
+                        <!-- /menu footer buttons -->
+                        <div class="sidebar-footer hidden-small">
+                            <a data-toggle="tooltip" data-placement="top" title="Settings">
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Lock">
+                                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                        <!-- /menu footer buttons -->
+                    </div>
+                </div>
+
+                <!-- top navigation -->
+                @Html.Action("TopNavigation", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+                <!-- /top navigation -->
+                <!-- page content -->
+                <div class="right_col" role="main">
+                    <div class="">
+                        <div class="page-title">
+                            <div class="title_left">
+                                <h3>分配人员 </h3>
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="x_panel">
+
+                                    <div class="x_content">
+
+                                        <div class="form-group">
+                                            <div class="col-md-6 col-sm-6 col-xs-9 col-md-offset-5">
+                                                <button type="button" class="btn btn-success" onclick="addNewMember()">增加人员</button>
+                                                <button type="button" class="btn btn-warning" onclick="pageSubmit()">提交</button>
+                                            </div>
+                                        </div>
+                                        <!-- start project list -->
+                                        <table class="table table-striped projects" style="margin-top:40px">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 20%">人员名称</th>
+                                                    <th>是否为组长</th>
+                                                    <th>截止日期</th>
+                                                    <th style="width: 20%">操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="userList">
+                                                <tr id="userListGroup">
+                                                    <td>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12 form-group">
+                                                            <input type="text" id="userName" name="userName" onclick="chooseDistributeUser(this)" placeholder="" readonly="readonly" class="form-control">
+                                                            <input type="hidden" id="userId" name="userId" readonly="readonly" class="form-control">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" name="isTeamleader" value="0" checked="checked" onchange="singleSelect(this)" />
+                                                    </td>
+                                                    <td>
+                                                        <div class="col-md-9 col-sm-9 col-xs-12 form-group">
+                                                            <input type="text" class="form-control" readonly="readonly" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm' })" value="@ViewBag.FinishTime">
+                                                        </div>
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <!-- end project list -->
+                                        <input type="hidden" id="conditionJson" name="conditionJson" value="@ViewBag.conditionJson">
+                                        <input type="hidden" id="workId" name="workId" value="@ViewBag.WorkId" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /page content -->
+                <!-- footer content -->
+                <!-- /footer content -->
+            </div>
+        </div>
+    </form>
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+    <script src="../dialog/lhgdialog.min.js?skin=iblue"></script>
+    <script src="../Scripts/WdatePicker.js"></script>
+
+
+    <script type="text/javascript">
+        function show() {
+            var Message = "@Html.Raw(ViewBag.Message)";
+            var MessageHref = "@Html.Raw(ViewBag.MessageHref)";
+            var Success = "@Html.Raw(ViewBag.Success)";
+            var SuccessHref = "@Html.Raw(ViewBag.SuccessHref)";
+            if (Message != null && Message != "") {
+                alert(Message);
+            }
+            if (MessageHref != null && MessageHref != "") {
+                alert(MessageHref);
+                window.location.href = "../WorkManager/DistributeWorkList";
+            }
+            if (Success != null && Success != "") {
+                alert(Success);
+            }
+            if (SuccessHref != null && SuccessHref != "") {
+                alert(SuccessHref);
+                window.location.href = "../WorkManager/DistributeWorkList";
+            }
+            //checkChange(@Html.Raw(ViewBag.needSend));
+        }
+
+        function chooseDistributeUser(textName) {
+            $.dialog.data('txtName', $(textName)[0]);
+            $.dialog.data('txtId', $(textName).next()[0]);
+            $.dialog.data('hasTxtName', $(textName).val());
+            $.dialog.data('hasTxtId', $(textName).next().val());
+            $.dialog({
+                content: 'url:../Condition/UserCondition',
+                title: '选择待分配人员',
+                lock: false,
+                width: '400px',
+                max: false,
+                min: false,
+            });
+        }
+
+        function pageSubmit() {
+            var json = '[';
+            $("#userList #userListGroup").each(function (i) {
+                var userName = $(this).find('input[name="userName"]').val();//获取name
+                var userId = $(this).find('input[name="userId"]').val();//获取Id
+                var isTeamLeader = $(this).find('input[name="isTeamleader"]').is(':checked');
+                json += '{';
+                json += '"UserName":"' + userName + '",';
+                json += '"UserId":"' + userId + '",';
+                if (isTeamLeader) {
+                    json += '"IsTeamLeader":"1"';
+                } else {
+                    json += '"IsTeamLeader":"0"';
+                }
+                json += '},';
+            });
+            json += ']';
+            $("#conditionJson").val(json);
+            $("#form1").submit();
+        }
+
+        function singleSelect(isTeamLeader) {
+            $("[name = isTeamleader]:checkbox").each(function () {
+                $(this).removeAttr("checked");
+            });
+
+            $(isTeamLeader).prop("checked", true);
+        }
+
+        function deleteMember(memberList) {
+            $(memberList).parent().parent().remove();
+        }
+
+        function addNewMember() {
+            var userList = $("#userList");
+            var htmlValue = '<tr id="userListGroup">' +
+                '<td>' +
+                '<div class="col-md-9 col-sm-9 col-xs-12 form-group">' +
+                '<input type="text" id="userName" name="userName" onclick="chooseDistributeUser(this)" placeholder="" readonly="readonly" class="form-control">' +
+                '<input type="hidden" id="userId" name="userId" readonly="readonly" class="form-control">' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<input type="checkbox" name="isTeamleader"  onchange="singleSelect(this)"  />' +
+                '</td>' +
+                '<td>' +
+                '<div class="col-md-9 col-sm-9 col-xs-12 form-group">' +
+                '<input type="text" class="form-control" readonly="readonly" onclick="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm\' })" value=\'@ViewBag.FinishTime\'>' +
+                '</div>' +
+                '</td>' +
+                '<td>' +
+                '<a onclick="deleteMember(this)" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>' +
+                '</td>' +
+                '</tr>';
+            userList.append(htmlValue);
+        }
+    </script>
+</body>
+</html>

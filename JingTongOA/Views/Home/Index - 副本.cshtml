@@ -1,0 +1,409 @@
+﻿@{
+    Layout = null;
+
+    List<JianTongBLL.WorkInfoClass> list = ViewBag.WorkList as List<JianTongBLL.WorkInfoClass>;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md" onload="init_normal_flot()">
+    <div class="container body">
+        <div class="main_container">
+
+            <!--左侧栏-->
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+
+                    <div class="clearfix"></div>
+
+                    <!-- sidebar menu -->
+                    @Html.Action("SideMenu", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+                    <!-- /sidebar menu -->
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Lock">
+                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+            <!--左侧栏结束-->
+            <!-- top navigation -->
+            @Html.Action("TopNavigation", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+            <!-- /top navigation -->
+            <!-- page content -->
+            <div class="right_col" role="main">
+                <div class="">
+                    <div class="row top_tiles">
+                        <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                            <div class="tile-stats">
+                                <div class="icon"><i class="fa fa-caret-square-o-right"></i></div>
+                                <div class="count">@ViewBag.MonthCount</div>
+                                <h4 style="margin-left:20px">一个月内</h4>
+                            </div>
+                        </div>
+                        <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                            <div class="tile-stats">
+                                <div class="icon"><i class="fa fa-comments-o"></i></div>
+                                <div class="count">@ViewBag.Month3Count</div>
+                                <h4 style="margin-left:20px">三个月内</h4>
+                            </div>
+                        </div>
+                        <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                            <div class="tile-stats">
+                                <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
+                                <div class="count">@ViewBag.Month6Count</div>
+                                <h4 style="margin-left:20px">六个月内</h4>
+                            </div>
+                        </div>
+                        <div class="animated flipInY col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                            <div class="tile-stats">
+                                <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                                <div class="count">@ViewBag.workingCount</div>
+                                <h4 style="margin-left:20px">需要完成的工作</h4>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h3>我的工作</h3>
+                                </div>
+                                <div class="x_content">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr class="headings">
+                                                    <th class="column-title">工作名称 </th>
+                                                    <th class="column-title">创建人 </th>
+                                                    <th class="column-title">主编审人 </th>
+                                                    <th class="column-title">负责人 </th>
+                                                    <th class="column-title">所属公司 </th>
+                                                    <th class="column-title">完成进度 </th>
+                                                    <th class="column-title">状态 </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                @if (list != null && list.Count() > 0)
+                                {
+                                    foreach (JianTongBLL.WorkInfoClass workInfoClass in list)
+                                    {
+                                        int Proportion = 0;
+                                        int finishMember = 0;
+                                        List<JianTongBLL.WorkMemberClass> memberList = JianTongFun.EntityFun.CreateInstance.WorkMemberList(workInfoClass.Id);
+                                        if (memberList != null && memberList.Count > 0)
+                                        {
+                                            foreach (JianTongBLL.WorkMemberClass workMember in memberList)
+                                            {
+                                                if (workMember.isFinished)
+                                                {
+                                                    finishMember += 1;
+                                                }
+                                            }
+
+                                            if (finishMember > 0 && memberList.Count > 0)
+                                            {
+                                                Proportion = finishMember * 100 / memberList.Count;
+                                            }
+                                        }
+
+                                        string stateValue = "";
+                                        string workStateInfo = "";
+
+                                        switch (workInfoClass.StateNow)
+                                        {
+                                            case JianTongBLL.WorkState.Created:
+                                                workStateInfo = "待分配人员";
+                                                break;
+                                            case JianTongBLL.WorkState.Distributed:
+                                                workStateInfo = "工作开始";
+                                                break;
+                                            case JianTongBLL.WorkState.WorkDone:
+                                                workStateInfo = "待专业复核";
+                                                break;
+                                            case JianTongBLL.WorkState.ProfessionalReviewed:
+                                                workStateInfo = "待项目复核";
+                                                break;
+                                            case JianTongBLL.WorkState.ProjectReviewed:
+                                                workStateInfo = "待归档";
+                                                break;
+                                            case JianTongBLL.WorkState.Filed:
+                                                workStateInfo = "待归档确认";
+                                                break;
+                                            /*case JianTongBLL.WorkState.FiledChecked:
+                                                stateValue = "待产值计算";
+                                                break;*/
+                                            case JianTongBLL.WorkState.ValueCalculated:
+                                                workStateInfo = "待财务确认";
+                                                break;
+                                            case JianTongBLL.WorkState.FinanceChecked:
+                                                workStateInfo = "待完结确认";
+                                                break;
+                                            case JianTongBLL.WorkState.Finished:
+                                                workStateInfo = "已验收";
+                                                break;
+                                            case JianTongBLL.WorkState.Cancel:
+                                                workStateInfo = "已取消";
+                                                break;
+                                        }
+
+
+                                        //JianTongBLL.JianTongUserClass CreateUser = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.JianTongUserClass>(workInfoClass.UserId);
+                                        <tr class="even pointer">
+                                            <td class=" ">
+                                                @if (workInfoClass.emergencyDegree == 2)
+                                {
+                                    <a href="../WorkManager/WorkDetail?workId=@workInfoClass.Id" style="text-decoration: underline; text-align: center;color:red">@workInfoClass.Name</a>
+                }
+                else
+                {
+                    <a href="../WorkManager/WorkDetail?workId=@workInfoClass.Id" style="text-decoration: underline; text-align: center">@workInfoClass.Name</a>
+}
+                                            </td>
+                                            <td class=" ">@workInfoClass.UserName </td>
+                                            <td class=" ">@workInfoClass.mainEditorName </td>
+                                            <td class=" ">@workInfoClass.chargeManName</td>
+                                            <td class=" ">@workInfoClass.companyName</td>
+                                            <td class="project_progress">
+                                                <div class="progress progress_sm">
+                                                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="@Proportion"></div>
+                                                </div>
+                                                <small>@Proportion % 完成</small>
+                                            </td>
+                                            <td class=" " id="@("workState" + workInfoClass.Id)">
+
+                                                @if (!workInfoClass.isPaused)
+                                {
+                                    switch (workInfoClass.StateNow)
+                                    {
+                                        case JianTongBLL.WorkState.Created:
+                                            stateValue = "待分配人员";
+                                            break;
+                                        case JianTongBLL.WorkState.Distributed:
+                                            stateValue = "工作开始";
+                                            break;
+                                        case JianTongBLL.WorkState.WorkDone:
+                                            stateValue = "待专业复核";
+                                            break;
+                                        case JianTongBLL.WorkState.ProfessionalReviewed:
+                                            stateValue = "待项目复核";
+                                            break;
+                                        case JianTongBLL.WorkState.ProjectReviewed:
+                                            stateValue = "待归档";
+                                            break;
+                                        case JianTongBLL.WorkState.Filed:
+                                            stateValue = "待归档确认";
+                                            break;
+                                        /*case JianTongBLL.WorkState.FiledChecked:
+                                            stateValue = "待产值计算";
+                                            break;*/
+                                        case JianTongBLL.WorkState.ValueCalculated:
+                                            stateValue = "待财务确认";
+                                            break;
+                                        case JianTongBLL.WorkState.FinanceChecked:
+                                            stateValue = "待完结确认";
+                                            break;
+                                        case JianTongBLL.WorkState.Finished:
+                                            stateValue = "已验收";
+                                            break;
+                                        case JianTongBLL.WorkState.Cancel:
+                                            stateValue = "已取消";
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (workInfoClass.StateNow != JianTongBLL.WorkState.Finished)
+                                    {
+                                        stateValue = "已暂停";
+                                    }
+                                    else
+                                    {
+                                        stateValue = "已验收";
+                                    }
+                                }
+                                                @stateValue
+                                            </td>
+
+
+                                        </tr>
+                    }
+                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /page content -->
+                <!-- footer content -->
+                <!-- /footer content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../vendors/nprogress/nprogress.js"></script>
+    <!-- Chart.js -->
+    <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
+    <!-- jQuery Sparklines -->
+    <script src="../vendors/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
+    <!-- Flot -->
+    <script src="../vendors/Flot/jquery.flot.js"></script>
+    <script src="../vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="../vendors/Flot/jquery.flot.time.js"></script>
+    <script src="../vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="../vendors/Flot/jquery.flot.resize.js"></script>
+    <!-- Flot plugins -->
+    <script src="../vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+    <script src="../vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+    <script src="../vendors/flot.curvedlines/curvedLines.js"></script>
+    <!-- DateJS -->
+    <script src="../vendors/DateJS/build/date.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="../vendors/moment/min/moment.min.js"></script>
+    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+    <script type="text/javascript">
+
+        function init_normal_flot() {
+
+            //var b = [[gd(2015, 1, 1), 82], [gd(2015, 2,1), 300], [gd(2015, 3,1), 66], [gd(2015, 4, 1), 60], [gd(2015, 5, 1), 120], [gd(2012, 6, 1), 30], [gd(2015,7, 1), 140]];
+           /* for (var a = [[gd(2012, 1, 1), 17], [gd(2012, 1, 2), 74], [gd(2012, 1, 3), 6], [gd(2012, 1, 4), 39], [gd(2012, 1, 5), 20], [gd(2012, 1, 6), 85], [gd(2012, 1, 7), 7]],
+                b = [[gd(2012, 1, 1), 82], [gd(2012, 1, 2), 23], [gd(2012, 1, 3), 66], [gd(2012, 1, 4), 9], [gd(2012, 1, 5), 119], [gd(2012, 1, 6), 6], [gd(2012, 1, 7), 9]],
+                d = [], e = [[0, 1], [1, 9], [2, 6], [3, 10], [4, 5], [5, 17], [6, 6], [7, 10], [8, 7], [9, 11], [10, 35], [11, 9], [12, 12], [13, 5], [14, 3], [15, 4], [16, 9]],
+                f = 0; f < 30; f++) d.push([new Date(Date.today().add(f).days()).getTime(), randNum() + f + f + 10]);*/
+            var date = new Date();
+            var year = @DateTime.Now.Year;
+            var d = [];
+            for (var i = 1; i <= 12; i++) {
+                d.push([gd(year, i, 1), 50 + i * 10]);
+            }
+
+            var h = {
+                grid: {
+                    show: !0,
+                    aboveData: !0,
+                    color: "#3f3f3f",
+                    labelMargin: 10,
+                    axisMargin: 0,
+                    borderWidth: 0,
+                    borderColor: null,
+                    minBorderMargin: 5,
+                    clickable: !0,
+                    hoverable: !0,
+                    autoHighlight: !0,
+                    mouseActiveRadius: 100
+                },
+                series: {
+                    lines: {
+                        show: !0,
+                        fill: !0,
+                        lineWidth: 2,
+                        steps: !1
+                    },
+                    points: {
+                        show: !0,
+                        radius: 4.5,
+                        symbol: "circle",
+                        lineWidth: 3
+                    }
+                },
+                legend: {
+                    position: "ne",
+                    margin: [0, -25],
+                    noColumns: 0,
+                    labelBoxBorderColor: null,
+                    labelFormatter: function (a, b) {
+                        return a + "&nbsp;&nbsp;"
+                    },
+                    width: 40,
+                    height: 1
+                },
+                colors: ["#96CA59", "#3F97EB", "#72c380", "#6f7a8a", "#f7cb38", "#5a8022", "#2c7282"],
+                shadowSize: 0,
+                tooltip: !0,
+                tooltipOpts: {
+                    content: "%s: %y.0",
+                    xDateFormat: "%d/%m",
+                    shifts: {
+                        x: -30,
+                        y: -50
+                    },
+                    defaultTheme: !1
+                },
+                yaxis: {
+                    min: 0
+                },
+                xaxis: {
+                    mode: "time",
+                    minTickSize: [1, "month"],
+                    timeformat: "/%y/%m/%d",
+                    min: d[0][0],
+                    max: d[11][0]
+                }
+            };
+
+            $("#chart_02").length && (console.log("Plot2"), $.plot($("#chart_02"), [{
+                label: "完成工作",
+                data: d,
+                lines: {
+                    fillColor: "rgba(150, 202, 89, 0.12)"
+                },
+                points: {
+                    fillColor: "#fff"
+                }
+            }], h))
+        }
+        function gd(a, b, c) {
+            return new Date(a, b - 1, c).getTime()
+        }
+
+    </script>
+</body>
+</html>

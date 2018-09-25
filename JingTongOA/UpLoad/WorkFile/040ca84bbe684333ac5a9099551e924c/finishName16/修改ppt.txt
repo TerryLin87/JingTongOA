@@ -1,0 +1,437 @@
+120.24.211.64 liushuai.123
+
+131670264	7263
+
+
+D:\工作项目\suase备份\SuaseSystem\SuaseSystem1\SuaseSystem
+
+D:\工作项目\项目\项目\RenYiCompanyWeb\RenYiNew\RenYiCompanyWeb
+
+D:\工作项目\项目\项目\RenYiCompanyWeb\RenYiCompanyWeb\RenYiCompanyWeb
+
+D:\工作项目\项目\项目\VoteSystem1
+
+E:\三哥项目\Valvoline-Web
+
+D:\工作项目\工作\工作\NewsSpider
+
+D:\工作项目\项目\项目\租车源代码\淘旺旺代码
+
+D:\Documents\Visual Studio 2013\Projects\PicTest
+
+D:\BrnMall3.0beta\brnmallNew\新建文件夹\BrnMall
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.anddle.anddlechat.StepperActivity">
+
+    <RelativeLayout
+        android:id="@+id/rl_first"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_xkey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="x轴开关" />
+
+        <Button
+            android:id="@+id/btn_ykey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/btn_xkey"
+            android:padding="5dp"
+            android:text="y轴开关" />
+
+        <Button
+            android:id="@+id/btn_allkey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/btn_ykey"
+            android:padding="5dp"
+            android:text="全部关闭" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_first">
+
+        <Button
+            android:id="@+id/btn_number1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="1号" />
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/btn_number1"
+            android:padding="5dp"
+            android:text="归位" />
+
+        <Button
+            android:id="@+id/btn_number2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/btn_number1"
+            android:padding="5dp"
+            android:text="2号" />
+
+        <Button
+            android:id="@+id/btn_number3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/btn_number2"
+            android:padding="5dp"
+            android:text="归位" />
+
+        <Button
+            android:id="@+id/btn_number4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/btn_number3"
+            android:padding="5dp"
+            android:text="获取步数" />
+    </RelativeLayout>
+</RelativeLayout>
+
+
+#define PT_USE_TIMER
+#include <pt.h>
+/* ProtoThreads必须包含的头文件 */
+static int counter1,
+counter2,
+state1 = 0,
+state2 = 0;
+/* counter为定时计数器，state为每个灯的状态 */
+char * buffer;
+int length = 10;
+/* 0 操作类型（0 开关操作，只操作开关 取前面的1 2的值 1 指定目标操作,不处理开关 只取后面目标值） 1 x轴开关 2y轴开关 3 x轴的万位数 4 x轴的千位和百位数
+                                                                         * 5 x轴的十位和个位数 6 y轴的万位数 7 y轴的千位和百位数 8 y轴的十位和个位数 9获取当前步数 */
+long xstepper = 0;
+/* x轴 最大步数99220(8细分 转一圈1600步 */
+long ystepper = 0;
+/* y轴 最大步数99220(8细分 转一圈1600步 */
+static boolean xkey = false;
+/* 控制x轴电机开关 */
+static boolean ykey = false;
+/* 控制y轴电机开关 */
+boolean xdir = true;
+/* x轴正反转 */
+boolean ydir = true;
+/* y轴正反转 */
+long xtarget = 0;
+/* x轴目标步数 */
+long ytarget = 0;
+/* y轴目标步数 */
+long xwan = 0;
+/* x轴的万位数数字 */
+long xqianbai = 0;
+/* x轴的千位和百位数 */
+long xshige = 0;
+/* x轴的十位和个位数 */
+long ywan = 0;
+/* y轴的万位数数字 */
+long yqianbai = 0;
+/* y轴的千位和百位数 */
+long yshige = 0;
+/* y轴的十位和个位数 */
+const long xSpeed = 300;
+/* 30us执行一次 X轴频率 */
+const long ySpeed = 300;
+/* 30us执行一次 y轴频率 */
+const int INTERVAL = 1;
+static boolean xisopen = false;
+/*表示x轴是否是高电平*/
+static boolean yisopen = false;
+/*表示y轴是否是高电平*/
+static int protothread1(struct pt * pt)
+/* 线程1，控制x轴 */ 
+{
+  PT_BEGIN(pt);
+  /* 线程开始 */
+  while (1)
+  /* 每个线程都不会死 */ 
+  {
+    PT_WAIT_UNTIL(pt, counter1 == 30);
+    /* 如果时间满了30微秒，则继续执行，否则记录运行点，退出线程1 */
+    if (xkey) 
+    {
+      /* x轴运转 */
+      if (xdir)
+      /* 正转时 */ 
+      {
+        if (xtarget >= 0 && xtarget <= 49610)
+        /* 如果目标步数在范围内 */ 
+        {
+          if (xstepper == xtarget)
+          /* 到达目标 */ 
+          {
+            xkey = false;
+            /* 停止 */
+          }
+          if (xstepper > xtarget)
+          /* 当当前步数大于目标步数时 */ 
+          {
+            xdir = false;
+            /* 电机反转 */
+            digitalWrite(9, HIGH);
+          }
+          if (xstepper < xtarget)
+          /* 当当前步数小于目标步数时 */ 
+          {
+            /* Serial.println(xstepper); */
+            /* xdir = true;            / * 保持正转 * / */
+            digitalWrite(9, LOW);
+            digitalWrite(8, HIGH);
+            PT_TIMER_MICRODELAY(pt, 30);
+            digitalWrite(8, LOW);
+            xstepper += 1;
+            //Serial.println( xstepper );
+          }
+        }
+      } else 
+      {
+        /* 反转时 */
+        if (xtarget >= 0 && xtarget <= 49610) 
+        {
+          if (xstepper == xtarget)
+          /* 到达目标 */ 
+          {
+            xkey = false;
+          }
+          if (xstepper > xtarget)
+          /* 当当前步数大于目标步数时 */ 
+          {
+            /* xdir = true; */
+            digitalWrite(9, HIGH);
+            /* Serial.println(xstepper); */
+            digitalWrite(8, HIGH);
+            //PT_TIMER_MICRODELAY( pt, 30 );
+            PT_TIMER_MICRODELAY(pt, 30);
+            digitalWrite(8, LOW);
+            xstepper -= 1;
+          }
+          if (xstepper < xtarget) 
+          {
+            xdir = true;
+            digitalWrite(9, LOW);
+          }
+        }
+      }
+    }
+    counter1 = 0;
+    /* 计数器置零 */
+  }
+  PT_END(pt);
+  /* 线程结束 */
+}
+
+static int protothread2(struct pt * pt)
+/* 线程2，控制y轴 */ 
+{
+  PT_BEGIN(pt);
+  /* 线程开始 */
+  while (1)
+  /* 每个线程都不会死 */ 
+  {
+    PT_WAIT_UNTIL(pt, counter2 == 30);
+    /* 如果时间满了5秒，则继续执行，否则记录运行点，退出线程2 */
+    /* 计数清零 */
+    if (ykey) 
+    {
+      /* y轴运转 */
+      if (ydir)
+      /* 正转时 */ 
+      {
+        if (ytarget >= 0 && ytarget <= 49610)
+        /* 如果目标步数在范围内 */ 
+        {
+          if (ystepper == ytarget)
+          /* 到达目标 */ 
+          {
+            ykey = false;
+            /* 停止 */
+          }
+          if (ystepper > ytarget)
+          /* 当当前步数大于目标步数时 */ 
+          {
+            ydir = false;
+            /* 电机反转 */
+            digitalWrite(11, HIGH);
+          }
+          if (ystepper < ytarget)
+          /* 当当前步数小于目标步数时 */ 
+          {
+            /* Serial.println(xstepper); */
+            ydir = true;
+            /* 保持正转 */
+            digitalWrite(11, LOW);
+            digitalWrite(10, HIGH);
+            PT_TIMER_MICRODELAY(pt, 30);
+            //PT_TIMER_DELAY(pt,ySpeed);
+            digitalWrite(10, LOW);
+            ystepper += 1;
+          }
+        }
+      } else 
+      {
+        /* 反转时 */
+        if (ytarget >= 0 && ytarget <= 49610) 
+        {
+          if (ystepper == ytarget)
+          /* 到达目标 */ 
+          {
+            ykey = false;
+          }
+          if (ystepper > ytarget)
+          /* 当当前步数大于目标步数时 */ 
+          {
+            /* ydir = true; */
+            digitalWrite(11, HIGH);
+            /* Serial.println(xstepper); */
+            digitalWrite(10, HIGH);
+            PT_TIMER_MICRODELAY(pt, 30);
+            digitalWrite(10, LOW);
+            ystepper -= 1;
+          }
+          if (ystepper < ytarget) 
+          {
+            ydir = true;
+            digitalWrite(11, LOW);
+          }
+        }
+      }
+    }
+    counter2 = 0;
+  }
+  PT_END(pt);
+  /* 线程结束 */
+}
+static struct pt pt1,
+pt2;
+void setup() 
+{
+  /* put your setup code here, to run once: */
+  pinMode(8, OUTPUT);
+  /* 电机1号（X轴） */
+  pinMode(9, OUTPUT);
+  /* 电机1号 方向信号） */
+  pinMode(10, OUTPUT);
+  /* 电机2号（Y轴） */
+  pinMode(11, OUTPUT);
+  /* 电机2号 方向信号） */
+  Serial.begin(9600);
+  Serial2.begin(9600);
+  PT_INIT( & pt1);
+  /* 线程1初始化 */
+  PT_INIT( & pt2);
+  /* 线程2初始化 */
+}
+void loop()
+/* 这就是进行线程调度的地方 */ 
+{
+  /*
+   * 从蓝牙信号端口接收数据
+   */
+  if (Serial2.available()) 
+  {
+    buffer = new char[length];
+    int nReadSize = Serial2.readBytes(buffer, length);
+    if (nReadSize > 0) 
+    {
+      long xtarget1;
+      long ytarget1;
+      if (buffer[9] <= 0) 
+      {
+        if (buffer[0] == 0) 
+        {
+          if (buffer[1] != 0) 
+          {
+            xkey = true;
+            /* digitalWrite(6,HIGH); */
+          } else 
+          {
+            xkey = false;
+            /* digitalWrite(9,HIGH); */
+          }
+          if (buffer[2] != 0) 
+          {
+            ykey = true;
+          } else 
+          {
+            ykey = false;
+          }
+        }
+        if (buffer[0] == 1) 
+        {
+          if (buffer[3] > 0) 
+          {
+            xtarget1 += (long) buffer[3] * 10000;
+          }
+          if (buffer[4] > 0) 
+          {
+            xtarget1 += buffer[4] * 100;
+          }
+          if (buffer[5] > 0) 
+          {
+            xtarget1 += buffer[5];
+          }
+          if (buffer[6] > 0) 
+          {
+            ytarget1 += (long) buffer[6] * 10000;
+          }
+          if (buffer[7] > 0) 
+          {
+            ytarget1 += buffer[7] * 100;
+          }
+          if (buffer[8] > 0) 
+          {
+            ytarget1 += buffer[8];
+          }
+        } 
+        
+        xtarget = xtarget1;
+        if (xtarget >= 0) 
+        {
+          xkey = true;
+        }
+        ytarget = ytarget1;
+        if (ytarget >= 0) 
+        {
+          ykey = true;
+        }
+        xtarget1 = 0;
+        ytarget1 = 0;
+      }else //获取当前步数 
+        {
+          String x = String(xstepper);
+          String y = String(ystepper);
+          xkey= false;
+          ykey= false;
+          delay(400);
+          Serial2.println("/"+x+"-"+y);
+        }
+    }
+    delete buffer;
+  }
+  protothread1( & pt1);
+  /* 执行线程1 */
+  protothread2( & pt2);
+  /* 执行线程2 */
+  delayMicroseconds(10);
+  /* 时间片，每片1秒，可根据具体应用设置大小 */
+  counter1++;
+  counter2++;
+}

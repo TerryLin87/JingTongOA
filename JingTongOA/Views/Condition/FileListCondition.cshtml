@@ -1,0 +1,201 @@
+﻿<html>
+<head>
+    <title>选择条件</title>
+    <meta http-equiv="Content-Language" content="zh-cn">
+
+    <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
+    <meta name="CODE_LANGUAGE" content="C#">
+    <meta name="vs_defaultClientScript" content="JavaScript">
+    <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <script src="../dialog/lhgdialog.min.js?skin=iblue"></script>
+    <base target="_self">
+    <script language="javascript">
+        var api = frameElement.api, W = api.opener;
+
+        var tValue = W.$.dialog.data('txtName');
+        function cleanValue() {
+            tValue.value = '';
+            api.close();
+        }
+
+        function sendFromChild() {
+            var checkValues = "";
+            $("#ListBox2 option").each(function () {
+                checkValues += $(this).val() + "," + $(this).text() + "|";
+            });
+            tValue.value = checkValues;
+            api.close();
+
+            //window.returnValue = checkValues + "|" + checkName;
+            //window.close();
+        }
+
+        function checkJoin() {
+            $("#ListBox1 option:selected").each(function () {
+                var isExist = false;
+                var optionValue = $(this).val();
+                $("#ListBox2 option").each(function () {
+                    var value1 = $(this).val();
+                    if (optionValue == value1) {
+                        isExist = true;
+                    }
+                });
+                if (!isExist) {
+                    $("#ListBox2").append("<option value='" + $(this).val() + "'>" + $(this).text() + "</option>");
+                }
+            });
+        }
+
+        function allJoin() {
+            $("#ListBox1 option").each(function () {
+                var isExist = false;
+                var optionValue = $(this).val();
+                $("#ListBox2 option").each(function () {
+                    var value1 = $(this).val();
+                    if (optionValue == value1) {
+                        isExist = true;
+                    }
+                });
+                if (!isExist) {
+                    $("#ListBox2").append("<option value='" + $(this).val() + "'>" + $(this).text() + "</option>");
+                }
+            });
+        }
+
+        function checkRemove() {
+            $("#ListBox2 option:selected").remove();
+        }
+
+        function allRemove() {
+            //$("#ListBox2 option").each(function () {
+            $("#ListBox2").empty();
+            //});
+        }
+
+        function show() {
+            var hasTValue = W.$.dialog.data('hasTxtName');
+            var hasTId = W.$.dialog.data('hasTxtId');
+            var listbox2 = $('#ListBox2');
+            if (hasTValue) {
+                var htValues = hasTValue.split(',');
+                var htIds = hasTId.split(',');
+                var len = htValues.length;
+                for (var i = 0; i < len - 1; i++) {
+                    listbox2.append("<option value='" + htIds[i] + "'>" + htValues[i] + "</option>");
+                }
+            }
+        }
+    </script>
+</head>
+<body scroll="no" onload="show()">
+    <form name="form1" method="post" id="form1">
+        <table bordercolorlight="#c0c0c0" bordercolordark="#ffffff" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+            <tbody>
+                <tr>
+                    <td style="font-size: 12px; font-family: 宋体" align="left" background="../images/show_02.gif" height="22"> 　请选择您需要的项，然后点“确定”！</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center" valign="top">
+
+
+                        <table style="width: 318px; height: 49px" border="0" cellpadding="0" cellspacing="0">
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" style="height: 31px; text-align: center">
+                                        <table style="width: 100%;
+                                height: 49px" border="0" cellpadding="0" cellspacing="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="2" style="height: 31px; text-align: center">
+                                                        <table border="0" cellpadding="0" cellspacing="0">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td rowspan="4" style="width: 146px">
+                                                                        <select size="4" name="ListBox1" multiple="multiple" id="ListBox1" style="height:250px;width:150px;">
+                                                                            @{
+                                                                                List<JianTongBLL.WorkFileInfoList> user = ViewBag.List as List<JianTongBLL.WorkFileInfoList>;
+                                                                                if (user != null)
+                                                                                {
+                                                                                    foreach (JianTongBLL.WorkFileInfoList u in user)
+                                                                                    {
+                                                                                        <option value="@Html.Raw(u.Id)">@Html.Raw(u.Name)</option>
+                                                                                    }
+                                                                                }
+                                                                            }
+
+                                                                        </select>
+                                                                    </td>
+                                                                    <td style="width: 27px">
+                                                                        <input name="checkJoinSubmit" id="checkJoinSubmit" title="选中加入" onclick="checkJoin()" src="../images/AddTo.gif" value="选中加入" style="border-width:0px;" type="button">
+                                                                    </td>
+                                                                    <td rowspan="4" width="150">
+                                                                        <select size="4" name="ListBox2" multiple="multiple" id="ListBox2" style="height:250px;width:150px;">
+                                                                            @{
+                                                                                string checkId = ViewBag.checkId;
+                                                                                string checkName = ViewBag.checkName;
+
+                                                                                if (!string.IsNullOrWhiteSpace(checkId) && !string.IsNullOrWhiteSpace(checkName))
+                                                                                {
+                                                                                    string[] ids = checkId.Split(',');
+                                                                                    string[] names = checkName.Split(',');
+                                                                                    if (ids != null && names != null && ids.Count() == names.Count())
+                                                                                    {
+                                                                                        int count = ids.Count();
+                                                                                        for (int i = 0; i < count; i++)
+                                                                                        {
+                                                                                            if (!string.IsNullOrWhiteSpace(ids[i]))
+                                                                                            {
+                                                                                                <option value="@ids[i]">@names[i]</option>
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        </select>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="width: 27px">
+                                                                        <input name="AllJoinSubmit" id="AllJoinSubmit" title="全部加入" value="全部加入" onclick="allJoin()" src="../images/AddAll.gif" style="border-width:0px;" type="button">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="width: 27px">
+                                                                        <input name="RemoveSubmit" id="RemoveSubmit" title="选中去除" value="选中去除" onclick="checkRemove()" src="../images/Remove.gif" style="border-width:0px;" type="button">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="width: 27px">
+                                                                        <input name="AllRemoveSubmit" id="AllRemoveSubmit" title="全部去除" value="全部去除" onclick="allRemove()" src="../images/RemoveAll.gif" style="border-width:0px;" type="button">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="height: 31px; text-align: center">
+                                                        <input name="checkId" id="checkId" value="@ViewBag.checkId" style="height:0px;width:0px;" type="hidden">
+                                                        <input name="checkName" id="checkName" value="@ViewBag.checkName" style="height:0px;width:0px;" type="hidden">
+                                                        <input name="makeSure" id="makeSure" type="button" value="确定" onclick="sendFromChild()" />
+                                                        <input type="button" name="ImageButton5" id="ImageButton5" onclick="cleanValue()" value="清空" />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+</body>
+</html>

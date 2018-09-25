@@ -1,0 +1,308 @@
+﻿@{
+    Layout = null;
+
+    List<JianTongBLL.WorkInfoClass> list = ViewBag.WorkList as List<JianTongBLL.WorkInfoClass>;
+    int pageSize = ViewBag.PageSize;
+    int pageIndex = ViewBag.PageIndex;
+    int pageCount = ViewBag.Count;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>DataTables | Gentelella</title>
+
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- Datatables -->
+    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+    <form id="form1" method="post" name=" form1">
+        <div class="container body">
+            <div class="main_container">
+                <div class="col-md-3 left_col">
+                    <div class="left_col scroll-view">
+
+                        <div class="clearfix"></div>
+
+                        <!-- sidebar menu -->
+                        @Html.Action("SideMenu", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+                        <!-- /sidebar menu -->
+                        <!-- /menu footer buttons -->
+                        <div class="sidebar-footer hidden-small">
+                            <a data-toggle="tooltip" data-placement="top" title="Settings">
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Lock">
+                                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                        <!-- /menu footer buttons -->
+                    </div>
+                </div>
+
+                <!-- top navigation -->
+
+                @Html.Action("TopNavigation", "Home", new { pageName = ViewContext.RouteData.Values["controller"].ToString() })
+                <!-- /top navigation -->
+                <!-- page content -->
+                <div class="right_col" role="main">
+                    <div class="">
+                        
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+
+                                <div class="x_content">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr class="headings">
+                                                    <th class="column-title">工作名称 </th>
+                                                    <th class="column-title">创建人 </th>
+                                                    <th class="column-title">主编审人 </th>
+                                                    <th class="column-title">负责人 </th>
+                                                    <th class="column-title">所属公司 </th>
+                                                    <th class="column-title">操作 </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                @if (list != null && list.Count() > 0)
+                                                {
+                                                    foreach (JianTongBLL.WorkInfoClass workInfoClass in list)
+                                                    {
+                                                        //JianTongBLL.JianTongUserClass CreateUser = JianTongFun.EntityFun.CreateInstance.GetTByIntId<JianTongBLL.JianTongUserClass>(workInfoClass.UserId);
+                                                        <tr class="even pointer">
+                                                            
+                                                            <td class=" ">
+                                                                <a href="../WorkManager/DistributeWork?workId=@workInfoClass.Id" style="text-decoration: underline; text-align: center">@workInfoClass.Name</a>
+                                                            </td>
+                                                            <td class=" ">@workInfoClass.UserName </td>
+                                                            <td class=" ">@workInfoClass.mainEditorName </td>
+                                                            <td class=" ">@workInfoClass.chargeManName</td>
+                                                            <td class=" ">@workInfoClass.companyName</td>
+                                                            <td class=" ">
+                                                                <a href="../WorkManager/DistributeWork?workId=@workInfoClass.Id" style="text-decoration: underline; text-align: center">分配人员</a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="col-sm-3">
+                                            <select class="form-control" id="pageSize1">
+                                                <option id="2" value="30" @(pageSize == 30 ? "selected='selected'" : "")>30条/页</option>
+                                                <option id="3" value="50" @(pageSize == 50 ? "selected='selected'" : "")>50条/页</option>
+                                                <option id="4" value="70" @(pageSize == 70 ? "selected='selected'" : "")>70条/页</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <div class="dataTables_paginate paging_simple_numbers" id="datatable-checkbox_paginate">
+                                            <ul class="pagination" style="margin-top:0" id="pageIndexArea">
+                                                @{
+                                                    if (pageIndex == 1)
+                                                    {
+                                                        if (pageCount > 1)
+                                                        {
+                                                            <li class="paginate_button previous disabled" id="datatable-checkbox_previous">
+                                                                <a tabindex="0" aria-controls="datatable-checkbox" onclick="toNextOrPre('pre')" data-dt-idx="0">Previous</a>
+                                                            </li>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <li class="paginate_button previous" id="datatable-checkbox_previous">
+                                                            <a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="0">Previous</a>
+                                                        </li>
+                                                        <li class="paginate_button">
+                                                            <a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">1</a>
+                                                        </li>
+                                                    }
+
+                                                    if (pageIndex > 5)
+                                                    {
+                                                        <li class="paginate_button disabled"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">...</a></li>
+                                                    }
+                                                    if (pageIndex - 2 > 1)
+                                                    {
+                                                        <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@(pageIndex - 2)</a></li>
+                                                    }
+
+                                                    if (pageIndex - 1 > 1)
+                                                    {
+                                                        <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@(pageIndex - 1)</a></li>
+                                                    }
+                                                    <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@pageIndex</a></li>
+                                                    if (pageIndex + 1 < pageCount - 2)
+                                                    {
+                                                        <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@(pageIndex + 1)</a></li>
+                                                    }
+
+                                                    if (pageIndex + 2 < pageCount - 1)
+                                                    {
+                                                        <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@(pageIndex + 2)</a></li>
+                                                    }
+
+                                                    if (pageIndex < pageCount && (pageCount - pageIndex) > 3)
+                                                    {
+                                                        <li class="paginate_button disabled"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">...</a></li>
+                                                    }
+                                                    if (pageCount > 1)
+                                                    {
+                                                        if (pageIndex == pageCount)
+                                                        {
+                                                            <li class="paginate_button active"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@pageCount</a></li>
+                                                        }
+                                                        else
+                                                        {
+                                                            <li class="paginate_button"><a tabindex="0" aria-controls="datatable-checkbox" href="#" data-dt-idx="1">@pageCount</a></li>
+                                                            <li class="paginate_button next" id="datatable-checkbox_next"><a tabindex="0" aria-controls="datatable-checkbox" onclick="toNextOrPre('next')" data-dt-idx="7">Next</a></li>
+                                                        }
+                                                    }
+                                                }
+
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <input id="pageSize" name="pageSize" value="@pageSize" type="hidden" />
+                                    <input id="pageIndex" name="pageIndex" value="@pageIndex" type="hidden" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /page content -->
+                <!-- footer content -->
+                <!-- /footer content -->
+            </div>
+        </div>
+    </form>
+    <!-- jQuery -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="../vendors/nprogress/nprogress.js"></script>
+    <!-- iCheck -->
+    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <!-- Datatables -->
+    <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="../vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="../vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../vendors/pdfmake/build/vfs_fonts.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="../build/js/custom.min.js"></script>
+    <script type="text/javascript">
+
+        function onChangePageSize() {
+
+            $("#pageSize").val($('#pageSize1 option:selected').val());
+            $("#form1").submit();
+        }
+
+        function toNextOrPre(operation) {
+            var CurrentPageIndex = parseInt($("#pageIndex").val());
+            var CurrentPageCount = parseInt($("#pageSize").val());
+            if (!isNaN(CurrentPageCount) && !isNaN(CurrentPageIndex)) {
+                var pageIndex = 0;
+                switch (operation) {
+                    case "next":
+                        if (CurrentPageIndex == CurrentPageCount) {
+                            alert("已经是最后一页");
+                            return false;
+                        }
+                        pageIndex = CurrentPageIndex + 1;
+                        break;
+                    case "last":
+                        if (CurrentPageIndex == CurrentPageCount) {
+                            alert("已经是最后一页");
+                            return false;
+                        }
+                        pageIndex = CurrentPageCount;
+                        break;
+                    case "pre":
+                        if (CurrentPageIndex == 1) {
+                            alert("已经是第一页");
+                            return false;
+                        }
+                        pageIndex = CurrentPageIndex - 1;
+                        break;
+                    case "first":
+                        if (CurrentPageIndex == 1) {
+                            alert("已经是第一页");
+                            return false;
+                        }
+                        pageIndex = 1;
+                        break;
+                }
+                if (pageIndex == 0) {
+                    alert("翻页操作内容错误！");
+                    return false;
+                }
+                $("#pageIndex").val(pageIndex);
+                $("#form1").submit();
+            }
+        }
+
+        function toPageIndex(pageIndex){
+            if (pageIndex <= 0) {
+                pageIndex = 1;
+            }
+            if (pageIndex > @pageCount){
+                pageIndex = @pageCount;
+            }
+            $("#pageIndex").val(pageIndex);
+            $("#form1").submit();
+
+        }
+    </script>
+
+</body>
+</html>
